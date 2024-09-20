@@ -1,0 +1,60 @@
+values
+YV_USER (yvuserno, yvid, yvpw, yvname, yvphone_number, yvtype)
+HOSPITAL (hospitalno, hcall_number, hname, hregion) 
+VACCINETYPE (vname)
+VACCINE (vname, hospitalno, vdate, vvolume) 
+APPOINT (yvuserno, vname, hospitalno, adate) 
+POST (postno, vname, ptitle, pcontent, pwriter) 
+
+create table YV_USER (
+	yvuserno number(10) not null primary key,
+	yvid varchar2(30) not null unique,
+	yvpw varchar2(40) not null,
+	yvname varchar2(30) not null,
+	yvphone_number varchar2(11) not null,
+	yvtype number(1) not null
+);
+
+create table HOSPITAL (
+	hospitalno number(9) primary key,
+	hcall_number varchar2(11) not null,
+	hname varchar2(60) not null,
+	hregion varchar2(30) not null
+);
+
+create table VACCINETYPE (
+	vname varchar2(45) not null primary key
+);
+
+create table VACCINE (
+	vname varchar2(45) references VACCINETYPE(vname) not null,
+   	hospitalno number(9) references HOSPITAL(hospitalno),
+	vdate date not null,
+	vvolume number(3),
+	constraint PK_VACCINE primary key (vname, hospitalno, vdate)
+);
+
+create table APPOINT (
+	yvuserno number(10) references YV_USER(yvuserno) not null primary key,
+	vname varchar2(45) references VACCINETYPE(vname) not null,
+	hospitalno number(9) references HOSPITAL(hospitalno),
+	adate date not null
+);
+
+create table POST (
+	postno number(11) not null primary key,
+	vname varchar2(45) references VACCINETYPE(vname) not null,
+	ptitle varchar2(75) not null,
+	pcontent varchar2(1500) not null,
+	pwriter number(10) references YV_USER(yvuserno) not null
+);
+
+
+
+
+drop table YV_USER cascade constraints;
+drop table VACCINETYPE cascade constraints;
+drop table HOSPITAL cascade constraints;
+drop table POST cascade constraints;
+drop table VACCINE cascade constraints;
+drop table APPOINT cascade constraints;
