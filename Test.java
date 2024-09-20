@@ -1,23 +1,17 @@
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -27,27 +21,23 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.MenuKeyEvent;
-import javax.swing.table.DefaultTableModel;
 
 /*
-Login_Panel : ë¡œê·¸ì¸í™”ë©´
-SignUp_Panel : íšŒì›ê°€ì…
-Find_ID_Panel : ì•„ì´ë””ì°¾ê¸°
-panel4 : ë¹„ë°€ë²ˆí˜¸ì°¾ê¸°
-panel5 : ë³¸ì¸í™•ì¸ (ë¹„ë°€ë²ˆí˜¸ ì¬í™•ì¸)
-panel6 : ë©”ì¸í™”ë©´
-panel7 : íšŒì›ì •ë³´ìˆ˜ì • ë° ì•„ì´ë”” ë³€ê²½í›„ ë¹„ë°€ë²ˆí˜¸ë³€ê²½
-panel8 : ì ‘ì¢…ì˜ˆì•½
-panel9 : ì˜ˆì•½í™•ì¸ ë° ì·¨ì†Œ
-panel10 : ê²Œì‹œíŒ
+Login_Panel : ·Î±×ÀÎÈ­¸é
+SignUp_Panel : È¸¿ø°¡ÀÔ
+Find_ID_Panel : ¾ÆÀÌµğÃ£±â
+panel4 : ºñ¹Ğ¹øÈ£Ã£±â
+panel5 : º»ÀÎÈ®ÀÎ (ºñ¹Ğ¹øÈ£ ÀçÈ®ÀÎ)
+panel6 : ¸ŞÀÎÈ­¸é
+panel7 : È¸¿øÁ¤º¸¼öÁ¤ ¹× ¾ÆÀÌµğ º¯°æÈÄ ºñ¹Ğ¹øÈ£º¯°æ
+panel8 : Á¢Á¾¿¹¾à
+panel9 : ¿¹¾àÈ®ÀÎ ¹× Ãë¼Ò
+panel10 : °Ô½ÃÆÇ
 panel11 : 
-panel12 : ë³‘ì›ë¦¬ìŠ¤íŠ¸
-panel13 : ë°±ì‹ ë¦¬ìŠ¤íŠ¸
+panel12 : º´¿ø¸®½ºÆ®
+panel13 : ¹é½Å¸®½ºÆ®
 panel14 : 
 panel15 : 
 panel16 : 
@@ -56,2149 +46,1549 @@ panel18 :
 */
 
 class cn { // connect
-   static int userno = -1;
-   static boolean ismanage = false;
-   static boolean condition = false; // ì˜ˆì•½ì·¨ì†Œì‹œ true, íšŒì›ì •ë³´ ìˆ˜ì •ì‹œ false, ë¹„ë°€ë²ˆí˜¸ ë¶„ì‹¤ì‹œ true
-   static Connection conn = null;
-   static Statement stmt = null;
-   static PreparedStatement pstmt = null;
-   static ResultSet rset = null;
+	static int userno = 1;
+	static boolean ismanage = false;
+	static boolean condition = false; // ¿¹¾àÃë¼Ò½Ã true, È¸¿øÁ¤º¸ ¼öÁ¤½Ã false, ºñ¹Ğ¹øÈ£ ºĞ½Ç½Ã true
+	static Connection conn = null;
+	static Statement stmt = null;
+	static PreparedStatement pstmt = null;
+	static ResultSet rset = null;
 }
 
 @SuppressWarnings("serial")
-class Login_Panel extends JPanel { // 1ë²ˆì§¸ íŒ¨ë„ (ë¡œê·¸ì¸)
-   private Test win;
-   private static JTextField id_tf = new JTextField(30);
-   private static JPasswordField pw_pf = new JPasswordField();
-   private static final JLabel label1 = new JLabel("ë°±ì‹  ì˜ˆì•½ í”„ë¡œê·¸ë¨");
-   private static final JLabel label2 = new JLabel("YUVID");
-   private static final JLabel label3 = new JLabel("ID");
-   private static final JLabel label4 = new JLabel("PW");
-   private static final JButton reg_btn = new JButton("íšŒì›ê°€ì…");
-   private static final JButton find_id_btn = new JButton("IDì°¾ê¸°");
-   private static final JButton find_pw_btn = new JButton("PWì°¾ê¸°");
-   private static final JButton login_btn = new JButton("ë¡œê·¸ì¸");
-   private static final JButton commu_btn = new JButton("ê²Œì‹œíŒ");
+class Login_Panel extends JPanel { // 1¹øÂ° ÆĞ³Î (·Î±×ÀÎ)
+	private Test win;
+	private static JTextField id_tf = new JTextField(30);
+	private static JPasswordField pw_pf = new JPasswordField();
+	private static final JLabel label1 = new JLabel("¹é½Å ¿¹¾à ÇÁ·Î±×·¥");
+	private static final JLabel label2 = new JLabel("YUVID");
+	private static final JLabel label3 = new JLabel("ID");
+	private static final JLabel label4 = new JLabel("PW");
+	private static final JButton reg_btn = new JButton("È¸¿ø°¡ÀÔ");
+	private static final JButton find_id_btn = new JButton("IDÃ£±â");
+	private static final JButton find_pw_btn = new JButton("PWÃ£±â");
+	private static final JButton login_btn = new JButton("·Î±×ÀÎ");
+	private static final JButton commu_btn = new JButton("°Ô½ÃÆÇ");
 
-   public Login_Panel(Test win) { // UIêµ¬ì„±
-      this.win = win;
-      setLayout(null);
+	public Login_Panel(Test win) { // UI±¸¼º
+		this.win = win;
+		setLayout(null);
 
-      label1.setFont(new Font("Serif", Font.BOLD, 23));
-      label1.setBounds(80, 40, 400, 50);
-      add(label1);
+		label1.setFont(new Font("Serif", Font.BOLD, 23));
+		label1.setBounds(80, 40, 400, 50);
+		add(label1);
 
-      label2.setFont(new Font("Serif", Font.BOLD, 23));
-      label2.setBounds(145, 70, 120, 65);
-      add(label2);
+		label2.setFont(new Font("Serif", Font.BOLD, 23));
+		label2.setBounds(145, 70, 120, 65);
+		add(label2);
 
-      label3.setBounds(50, 170, 67, 15);
-      add(label3);
+		label3.setBounds(50, 170, 67, 15);
+		add(label3);
 
-      id_tf.setBounds(85, 167, 146, 21);
-      add(id_tf);
-      id_tf.setColumns(10);
+		id_tf.setBounds(85, 167, 146, 21);
+		add(id_tf);
+		id_tf.setColumns(10);
 
-      label4.setBounds(45, 204, 67, 15);
-      add(label4);
+		label4.setBounds(45, 204, 67, 15);
+		add(label4);
 
-      pw_pf.setBounds(85, 201, 146, 21);
-      add(pw_pf);
+		pw_pf.setBounds(85, 201, 146, 21);
+		add(pw_pf);
 
-      login_btn.setSize(86, 31);
-      login_btn.setLocation(245, 178);
-      add(login_btn);
+		login_btn.setSize(86, 31);
+		login_btn.setLocation(245, 178);
+		add(login_btn);
 
-      reg_btn.setSize(100, 23);
-      reg_btn.setLocation(20, 270);
-      add(reg_btn);
+		reg_btn.setSize(100, 23);
+		reg_btn.setLocation(20, 270);
+		add(reg_btn);
 
-      find_id_btn.setSize(100, 23);
-      find_id_btn.setLocation(132, 270);
-      add(find_id_btn);
+		find_id_btn.setSize(100, 23);
+		find_id_btn.setLocation(132, 270);
+		add(find_id_btn);
 
-      find_pw_btn.setSize(100, 23);
-      find_pw_btn.setLocation(245, 270);
-      add(find_pw_btn);
+		find_pw_btn.setSize(100, 23);
+		find_pw_btn.setLocation(245, 270);
+		add(find_pw_btn);
 
-      commu_btn.setSize(162, 31);
-      commu_btn.setLocation(98, 338);
-      add(commu_btn);
+		commu_btn.setSize(162, 31);
+		commu_btn.setLocation(98, 338);
+		add(commu_btn);
 
-      reg_btn.addActionListener(new Reg_Action());
-      find_id_btn.addActionListener(new Find_ID_Action());
-      find_pw_btn.addActionListener(new Find_PW_Action());
-      login_btn.addActionListener(new Login_Action());
-      commu_btn.addActionListener(new Commu_Action());
+		reg_btn.addActionListener(new Reg_Action());
+		find_id_btn.addActionListener(new Find_ID_Action());
+		find_pw_btn.addActionListener(new Find_PW_Action());
+		login_btn.addActionListener(new Login_Action());
+		pw_pf.addActionListener(new Login_Action());
+		id_tf.setFocusTraversalKeysEnabled(false);
+		id_tf.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == MenuKeyEvent.VK_TAB)
+					pw_pf.requestFocus();
+			}
+		});
 
-      pw_pf.addActionListener(new Login_Action());
-      id_tf.setFocusTraversalKeysEnabled(false);
-      id_tf.addKeyListener(new KeyAdapter() {
-         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == MenuKeyEvent.VK_TAB)
-               pw_pf.requestFocus();
-         }
-      });
+	}
 
-   }
+	private class Reg_Action implements ActionListener { // È¸¿ø°¡ÀÔ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel02");
+			clear_field();
+		}
+	}
 
-   private class Commu_Action implements ActionListener {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel15");
-      }
-   }
+	private class Find_ID_Action implements ActionListener { // ¾ÆÀÌµğÃ£±â ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel03");
+			clear_field();
+		}
+	}
 
-   private class Reg_Action implements ActionListener { // íšŒì›ê°€ì…ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel02");
-         clear_field();
-      }
-   }
+	private class Find_PW_Action implements ActionListener { // ºñ¹Ğ¹øÈ£Ã£±â ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel04");
+			clear_field();
+		}
+	}
 
-   private class Find_ID_Action implements ActionListener { // ì•„ì´ë””ì°¾ê¸° ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel03");
-         clear_field();
-      }
-   }
+	private class Login_Action implements ActionListener { // ·Î±×ÀÎ¹öÆ°
+		public void actionPerformed(ActionEvent e) {
+			String id = id_tf.getText();
+			String pw = String.copyValueOf(pw_pf.getPassword());
+			if (check_id_input(id)) {
+				JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.", "", 0);
+				return;
+			}
+			if (check_pw_input(pw)) {
+				JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.", "", 0);
+				return;
+			}
+			if (check_login(id, pw)) {
+				if (cn.ismanage) {
+					JOptionPane.showMessageDialog(null, "°ü¸®ÀÚ ±ÇÇÑÀ¸·Î ·Î±×ÀÎ µÇ¾ú½À´Ï´Ù.", "", 1);
+					win.change("panel06");
+				} else {
+					JOptionPane.showMessageDialog(null, "·Î±×ÀÎ µÇ¾ú½À´Ï´Ù.", "", 1);
+					win.change("panel06");
+				}
+				clear_field();
+			}
+			return;
+		}
+	}
 
-   private class Find_PW_Action implements ActionListener { // ë¹„ë°€ë²ˆí˜¸ì°¾ê¸° ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel04");
-         clear_field();
-      }
-   }
+	private static boolean check_id_input(String str) { // ID °ø¹éÈ®ÀÎ
+		if (str.equals(""))
+			return true;
+		return false;
+	}
 
-   private class Login_Action implements ActionListener { // ë¡œê·¸ì¸ë²„íŠ¼
-      public void actionPerformed(ActionEvent e) {
-         String id = id_tf.getText();
-         String pw = String.copyValueOf(pw_pf.getPassword());
-         if (check_id_input(id)) {
-            JOptionPane.showMessageDialog(null, "ì•„ì´ë””ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 0);
-            return;
-         }
-         if (check_pw_input(pw)) {
-            JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 0);
-            return;
-         }
-         if (check_login(id, pw)) {
-            if (cn.ismanage) {
-               JOptionPane.showMessageDialog(null, "ê´€ë¦¬ì ê¶Œí•œìœ¼ë¡œ ë¡œê·¸ì¸ ë˜ì—ˆìŠµë‹ˆë‹¤.", "", 1);
-               win.change("panel06");
-            } else {
-               JOptionPane.showMessageDialog(null, "ë¡œê·¸ì¸ ë˜ì—ˆìŠµë‹ˆë‹¤.", "", 1);
-               win.change("panel06");
-            }
-            clear_field();
-         }
-         return;
-      }
-   }
+	private static boolean check_pw_input(String str) { // PW °ø¹éÈ®ÀÎ
+		if (str.equals(""))
+			return true;
+		return false;
+	}
 
-   private static boolean check_id_input(String str) { // ID ê³µë°±í™•ì¸
-      if (str.equals(""))
-         return true;
-      return false;
-   }
+	private static boolean check_login(String id, String pw) { // ¾ÆÀÌµğ Á¸Àç ¿©ºÎ ¹× °ü¸®ÀÚ±ÇÇÑ È®ÀÎ
+		final String sql = "select yvpw, yvtype, yvuserno from yv_user where yvid=?";
+		try {
+			cn.pstmt = cn.conn.prepareStatement(sql);
+			cn.pstmt.setString(1, id);
+			cn.rset = cn.pstmt.executeQuery();
+			if (cn.rset.next()) {
+				if (cn.rset.getString("yvpw").equals(pw)) {
+					if (cn.rset.getInt("yvtype") == 1)
+						cn.ismanage = true;
+					else
+						cn.ismanage = false;
+					cn.userno = cn.rset.getInt("yvuserno");
+					return true;
+				} else {
+					JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.", "", 2);
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Á¸ÀçÇÏÁö ¾Ê´Â ¾ÆÀÌµğ ÀÔ´Ï´Ù", "", 0);
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return false;
+	}
 
-   private static boolean check_pw_input(String str) { // PW ê³µë°±í™•ì¸
-      if (str.equals(""))
-         return true;
-      return false;
-   }
-
-   private static boolean check_login(String id, String pw) { // ì•„ì´ë”” ì¡´ì¬ ì—¬ë¶€ ë° ê´€ë¦¬ìê¶Œí•œ í™•ì¸
-      final String sql = "select yvpw, yvtype, yvuserno from yv_user where yvid=?";
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setString(1, id);
-         cn.rset = cn.pstmt.executeQuery();
-         if (cn.rset.next()) {
-            if (cn.rset.getString("yvpw").equals(pw)) {
-               if (cn.rset.getInt("yvtype") == 1)
-                  cn.ismanage = true;
-               else
-                  cn.ismanage = false;
-               cn.userno = cn.rset.getInt("yvuserno");
-               return true;
-            } else {
-               JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", "", 2);
-            }
-         } else {
-            JOptionPane.showMessageDialog(null, "ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ì•„ì´ë”” ì…ë‹ˆë‹¤", "", 0);
-         }
-      } catch (Exception e1) {
-         e1.printStackTrace();
-      }
-      return false;
-   }
-
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      id_tf.setText("");
-      pw_pf.setText("");
-   }
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		id_tf.setText("");
+		pw_pf.setText("");
+	}
 }
 
 @SuppressWarnings("serial")
-class SignUp_Panel extends JPanel { // 2ë²ˆì§¸ íŒ¨ë„(íšŒì›ê°€ì…)
-   private static String checked_id = null;
-   private Test win;
-   private static final JLabel label1 = new JLabel("ID");
-   private static final JLabel label2 = new JLabel("PW");
-   private static final JLabel label3 = new JLabel("PWí™•ì¸");
-   private static final JLabel label4 = new JLabel("ì´ë¦„");
-   private static final JLabel label6 = new JLabel("ì „í™”ë²ˆí˜¸");
-   private static JTextField id_tf = new JTextField();
-   private static JTextField name_tf = new JTextField();
-   private static JTextField phone_tf = new JTextField();
-   private static JPasswordField pw_pf = new JPasswordField();
-   private static JPasswordField pw_confirm_pf = new JPasswordField();
-   private static final JButton id_check_btn = new JButton("ì¤‘ë³µí™•ì¸");
-   private static final JButton ok_btn = new JButton("ê°€ì…");
-   private static final JButton back_btn = new JButton("ì·¨ì†Œ");
+class SignUp_Panel extends JPanel { // 2¹øÂ° ÆĞ³Î(È¸¿ø°¡ÀÔ)
+	private static String checked_id = null;
+	private Test win;
+	private static final JLabel label1 = new JLabel("ID");
+	private static final JLabel label2 = new JLabel("PW");
+	private static final JLabel label3 = new JLabel("PWÈ®ÀÎ");
+	private static final JLabel label4 = new JLabel("ÀÌ¸§");
+	private static final JLabel label6 = new JLabel("ÀüÈ­¹øÈ£");
+	private static JTextField id_tf = new JTextField();
+	private static JTextField name_tf = new JTextField();
+	private static JTextField phone_tf = new JTextField();
+	private static JPasswordField pw_pf = new JPasswordField();
+	private static JPasswordField pw_confirm_pf = new JPasswordField();
+	private static final JButton id_check_btn = new JButton("Áßº¹È®ÀÎ");
+	private static final JButton ok_btn = new JButton("°¡ÀÔ");
+	private static final JButton back_btn = new JButton("Ãë¼Ò");
 
-   public SignUp_Panel(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
+	public SignUp_Panel(Test win) { // UI±¸¼º
+		setLayout(null);
+		this.win = win;
 
-      label1.setBounds(78, 100, 67, 15);
-      add(label1);
+		label1.setBounds(78, 100, 67, 15);
+		add(label1);
 
-      id_tf.setBounds(103, 97, 140, 21);
-      add(id_tf);
-      id_tf.setColumns(10);
+		id_tf.setBounds(103, 97, 140, 21);
+		add(id_tf);
+		id_tf.setColumns(10);
 
-      label2.setBounds(70, 140, 67, 15);
-      add(label2);
+		label2.setBounds(70, 140, 67, 15);
+		add(label2);
 
-      pw_pf.setBounds(103, 137, 140, 21);
-      add(pw_pf);
+		pw_pf.setBounds(103, 137, 140, 21);
+		add(pw_pf);
 
-      label3.setBounds(47, 180, 67, 15);
-      add(label3);
+		label3.setBounds(47, 180, 67, 15);
+		add(label3);
 
-      pw_confirm_pf.setBounds(103, 177, 140, 21);
-      add(pw_confirm_pf);
+		pw_confirm_pf.setBounds(103, 177, 140, 21);
+		add(pw_confirm_pf);
 
-      id_check_btn.setSize(85, 19);
-      id_check_btn.setLocation(260, 97);
-      add(id_check_btn);
+		id_check_btn.setSize(85, 19);
+		id_check_btn.setLocation(260, 97);
+		add(id_check_btn);
 
-      label4.setBounds(68, 220, 67, 15);
-      add(label4);
+		label4.setBounds(68, 220, 67, 15);
+		add(label4);
 
-      name_tf.setBounds(103, 217, 140, 21);
-      add(name_tf);
-      name_tf.setColumns(10);
+		name_tf.setBounds(103, 217, 140, 21);
+		add(name_tf);
+		name_tf.setColumns(10);
 
-      label6.setBounds(40, 300, 117, 15);
-      add(label6);
+		label6.setBounds(40, 300, 117, 15);
+		add(label6);
 
-      phone_tf.setBounds(103, 297, 140, 21);
-      add(phone_tf);
-      phone_tf.setColumns(10);
+		phone_tf.setBounds(103, 297, 140, 21);
+		add(phone_tf);
+		phone_tf.setColumns(10);
 
-      ok_btn.setSize(120, 25);
-      ok_btn.setLocation(54, 360);
-      add(ok_btn);
+		ok_btn.setSize(120, 25);
+		ok_btn.setLocation(54, 360);
+		add(ok_btn);
 
-      back_btn.setSize(120, 25);
-      back_btn.setLocation(190, 360);
-      add(back_btn);
+		back_btn.setSize(120, 25);
+		back_btn.setLocation(190, 360);
+		add(back_btn);
 
-      ok_btn.addActionListener(new Reg_Action());
-      back_btn.addActionListener(new Back_Action());
-      id_check_btn.addActionListener(new Check_ID_Action());
-   }
+		ok_btn.addActionListener(new Reg_Action());
+		back_btn.addActionListener(new Back_Action());
+		id_check_btn.addActionListener(new Check_ID_Action());
+	}
 
-   private class Check_ID_Action implements ActionListener { // ì¤‘ë³µ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         final String sql = "select 1 from sys.dual where exists (select * from yv_user where yvid=?)";
-         String register_id = id_tf.getText();
+	private class Check_ID_Action implements ActionListener { // Áßº¹ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final String sql = "select 1 from sys.dual where exists (select * from yv_user where yvid=?)";
+			String register_id = id_tf.getText();
 
-         for (int i = 0; i < register_id.length(); i++) {
-            if (register_id.charAt(i) < 0x30 || (register_id.charAt(i) > 0x39 && register_id.charAt(i) < 0x41)
-                  || (register_id.charAt(i) > 0x5A && register_id.charAt(i) < 0x61)
-                  || register_id.charAt(i) > 0x7A) {
-               JOptionPane.showMessageDialog(null, "ì•„ì´ë””ëŠ” ì˜ë¬¸, ìˆ«ìë§Œ ì‚¬ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤.", "", 0);
-               return;
-            }
-         }
-         if (id_tf.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "ì•„ì´ë””ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 0);
-         } else if (register_id.length() > 30) {
-            JOptionPane.showMessageDialog(null, "ì•„ì´ë””ê°€ ë„ˆë¬´ ê¹ë‹ˆë‹¤.", "", 0);
-         } else if (register_id.length() < 5) {
-            JOptionPane.showMessageDialog(null, "ì•„ì´ë””ê°€ ë„ˆë¬´ ì§§ìŠµë‹ˆë‹¤.", "", 0);
-         } else {
-            try {
-               cn.pstmt = cn.conn.prepareStatement(sql);
-               cn.pstmt.setString(1, register_id);
-               cn.rset = cn.pstmt.executeQuery();
-               if (cn.rset.next()) {
-                  JOptionPane.showMessageDialog(null, "ì¡´ì¬í•˜ëŠ” ì•„ì´ë”” ì…ë‹ˆë‹¤", "", 2);
-               } else {
-                  JOptionPane.showMessageDialog(null, "ìƒì„± ê°€ëŠ¥í•œ ì•„ì´ë”” ì…ë‹ˆë‹¤.", "", 1);
-                  checked_id = register_id;
-               }
-            } catch (Exception e1) {
-               e1.printStackTrace();
-            }
-         }
-         return;
-      }
-   }
+			for (int i = 0; i < register_id.length(); i++) {
+				if (register_id.charAt(i) < 0x30 || (register_id.charAt(i) > 0x39 && register_id.charAt(i) < 0x41)
+						|| (register_id.charAt(i) > 0x5A && register_id.charAt(i) < 0x61)
+						|| register_id.charAt(i) > 0x7A) {
+					JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ´Â ¿µ¹®, ¼ıÀÚ¸¸ »ç¿ë °¡´ÉÇÕ´Ï´Ù.", "", 0);
+					return;
+				}
+			}
+			if (id_tf.getText().equals("")) {
+				JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.", "", 0);
+			} else if (register_id.length() > 30) {
+				JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ°¡ ³Ê¹« ±é´Ï´Ù.", "", 0);
+			} else if (register_id.length() < 5) {
+				JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ°¡ ³Ê¹« Âª½À´Ï´Ù.", "", 0);
+			} else {
+				try {
+					cn.pstmt = cn.conn.prepareStatement(sql);
+					cn.pstmt.setString(1, register_id);
+					cn.rset = cn.pstmt.executeQuery();
+					if (cn.rset.next()) {
+						JOptionPane.showMessageDialog(null, "Á¸ÀçÇÏ´Â ¾ÆÀÌµğ ÀÔ´Ï´Ù", "", 2);
+					} else {
+						JOptionPane.showMessageDialog(null, "»ı¼º °¡´ÉÇÑ ¾ÆÀÌµğ ÀÔ´Ï´Ù.", "", 1);
+						checked_id = register_id;
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+			return;
+		}
+	}
 
-   private class Reg_Action implements ActionListener { // ê°€ì… ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         String pw = String.copyValueOf(pw_pf.getPassword());
-         String pw_confirm = String.copyValueOf(pw_confirm_pf.getPassword());
-         String name = name_tf.getText();
-         String phone = phone_tf.getText();
-         if (pw.equals("") || pw_confirm.equals("") || name.equals("") || phone.equals("")) {
-            JOptionPane.showMessageDialog(null, "ëª¨ë“  í•­ëª©ì„ ì±„ì›Œì£¼ì„¸ìš”.", "", 0);
-            return;
-         }
+	private class Reg_Action implements ActionListener { // °¡ÀÔ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String pw = String.copyValueOf(pw_pf.getPassword());
+			String pw_confirm = String.copyValueOf(pw_confirm_pf.getPassword());
+			String name = name_tf.getText();
+			String phone = phone_tf.getText();
+			if (pw.equals("") || pw_confirm.equals("") || name.equals("") || phone.equals("")) {
+				JOptionPane.showMessageDialog(null, "¸ğµç Ç×¸ñÀ» Ã¤¿öÁÖ¼¼¿ä.", "", 0);
+				return;
+			}
 
-         if (checked_id.equals(id_tf.getText())) {
-            if (pw.equals(pw_confirm)) {
-               for (int i = 0; i < pw.length(); i++) {
-                  if (pw.charAt(i) < 0x21 || pw.charAt(i) > 0x7E) {
-                     JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ëŠ” ì˜ë¬¸, ìˆ«ì ë° ì¼ë¶€ íŠ¹ìˆ˜ë¬¸ìë§Œ ì‚¬ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤.", "", 0);
-                     return;
-                  }
-               }
-               if (pw.length() < 4) {
-                  JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ê°€ ë„ˆë¬´ ì§§ìŠµë‹ˆë‹¤.", "", 0);
-                  return;
-               } else if (pw.length() > 20) {
-                  JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ê°€ ë„ˆë¬´ ê¹ë‹ˆë‹¤.", "", 0);
-                  return;
-               } else {
-                  JOptionPane.showMessageDialog(null, "íšŒì›ê°€ì…ì´ ì™„ë£Œ ë˜ì—ˆìŠµë‹ˆë‹¤.", "", 1);
-                  insert_id(checked_id, pw, name, phone);
-                  clear_field();
-                  win.change("panel01");
-               }
-            } else {
-               JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ ì¬ì…ë ¥ì´ ì˜¬ë°”ë¥´ê²Œ ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", "", 2);
-            }
-         } else {
-            JOptionPane.showMessageDialog(null, "ì•„ì´ë”” ì¤‘ë³µí™•ì¸ì„ í•´ì£¼ì„¸ìš”", "", 2);
-         }
-         return;
-      }
-   }
+			if (checked_id.equals(id_tf.getText())) {
+				if (pw.equals(pw_confirm)) {
+					for (int i = 0; i < pw.length(); i++) {
+						if (pw.charAt(i) < 0x21 || pw.charAt(i) > 0x7E) {
+							JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£´Â ¿µ¹®, ¼ıÀÚ ¹× ÀÏºÎ Æ¯¼ö¹®ÀÚ¸¸ »ç¿ë °¡´ÉÇÕ´Ï´Ù.", "", 0);
+							return;
+						}
+					}
+					if (pw.length() < 4) {
+						JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£°¡ ³Ê¹« Âª½À´Ï´Ù.", "", 0);
+						return;
+					} else if (pw.length() > 20) {
+						JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£°¡ ³Ê¹« ±é´Ï´Ù.", "", 0);
+						return;
+					} else {
+						JOptionPane.showMessageDialog(null, "È¸¿ø°¡ÀÔÀÌ ¿Ï·á µÇ¾ú½À´Ï´Ù.", "", 1);
+						insert_id(checked_id, pw, name, phone);
+						clear_field();
+						win.change("panel01");
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£ ÀçÀÔ·ÂÀÌ ¿Ã¹Ù¸£°Ô µÇÁö ¾Ê¾Ò½À´Ï´Ù.", "", 2);
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ Áßº¹È®ÀÎÀ» ÇØÁÖ¼¼¿ä", "", 2);
+			}
+			return;
+		}
+	}
 
-   private class Back_Action implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel01");
-         clear_field();
-      }
+	private class Back_Action implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel01");
+			clear_field();
+		}
 
-   }
+	}
 
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      id_tf.setText("");
-      pw_pf.setText("");
-      pw_confirm_pf.setText("");
-      name_tf.setText("");
-      phone_tf.setText("");
-   }
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		id_tf.setText("");
+		pw_pf.setText("");
+		pw_confirm_pf.setText("");
+		name_tf.setText("");
+		phone_tf.setText("");
+	}
 
-   private static void insert_id(String iid, String ipw, String iname, String iphone) {
-      final String sql = "insert into YV_USER values(?, ?, ?, ?, ?, 0)";
-      final String sql2 = "SELECT MAX(yvuserno) from YV_USER";
-      try {
-         cn.stmt = cn.conn.createStatement();
-         cn.rset = cn.stmt.executeQuery(sql2);
-         cn.rset.next();
-         int no_tmp = cn.rset.getInt("MAX(yvuserno)") + 1;
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setInt(1, no_tmp);
-         cn.pstmt.setString(2, iid);
-         cn.pstmt.setString(3, ipw);
-         cn.pstmt.setString(4, iname);
-         cn.pstmt.setString(5, iphone);
-         cn.pstmt.executeUpdate();
-      } catch (Exception e) {
-         System.out.println(e);
-      }
-   }
+	private static void insert_id(String iid, String ipw, String iname, String iphone) {
+		final String sql = "insert into YV_USER values(?, ?, ?, ?, ?, 0)";
+		final String sql2 = "SELECT MAX(yvuserno) from YV_USER";
+		try {
+			cn.stmt = cn.conn.createStatement();
+			cn.rset = cn.stmt.executeQuery(sql2);
+			cn.rset.next();
+			int no_tmp = cn.rset.getInt("MAX(yvuserno)") + 1;
+			cn.pstmt = cn.conn.prepareStatement(sql);
+			cn.pstmt.setInt(1, no_tmp);
+			cn.pstmt.setString(2, iid);
+			cn.pstmt.setString(3, ipw);
+			cn.pstmt.setString(4, iname);
+			cn.pstmt.setString(5, iphone);
+			cn.pstmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class Find_ID_Panel extends JPanel { // 3ë²ˆì§¸ íŒ¨ë„(IDì°¾ê¸°)
-   private static JTextField name_tf = new JTextField();
-   private static JTextField phone_tf = new JTextField();
-   private Test win;
-   private static final JLabel label1 = new JLabel("ì´ë¦„:");
-   private static final JLabel label2 = new JLabel("ì „í™”ë²ˆí˜¸:");
-   private static final JButton find_btn = new JButton("ì°¾ê¸°");
-   private static final JButton back_btn = new JButton("ì·¨ì†Œ");
+class Find_ID_Panel extends JPanel { // 3¹øÂ° ÆĞ³Î(IDÃ£±â)
+	private static JTextField name_tf = new JTextField();
+	private static JTextField phone_tf = new JTextField();
+	private Test win;
+	private static final JLabel label1 = new JLabel("ÀÌ¸§:");
+	private static final JLabel label2 = new JLabel("ÀüÈ­¹øÈ£:");
+	private static final JButton find_btn = new JButton("Ã£±â");
+	private static final JButton back_btn = new JButton("Ãë¼Ò");
 
-   public Find_ID_Panel(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
-      label1.setBounds(84, 60, 77, 15);
-      add(label1);
+	public Find_ID_Panel(Test win) { // UI±¸¼º
+		setLayout(null);
+		this.win = win;
+		label1.setBounds(84, 60, 77, 15);
+		add(label1);
 
-      name_tf.setBounds(123, 57, 160, 21);
-      add(name_tf);
-      name_tf.setColumns(10);
+		name_tf.setBounds(123, 57, 160, 21);
+		add(name_tf);
+		name_tf.setColumns(10);
 
-      label2.setBounds(60, 94, 107, 15);
-      add(label2);
+		label2.setBounds(60, 94, 107, 15);
+		add(label2);
 
-      phone_tf.setBounds(123, 91, 160, 21);
-      add(phone_tf);
+		phone_tf.setBounds(123, 91, 160, 21);
+		add(phone_tf);
 
-      find_btn.setSize(120, 25);
-      find_btn.setLocation(50, 145);
-      add(find_btn);
+		find_btn.setSize(120, 25);
+		find_btn.setLocation(50, 145);
+		add(find_btn);
 
-      back_btn.setSize(120, 25);
-      back_btn.setLocation(190, 145);
-      add(back_btn);
+		back_btn.setSize(120, 25);
+		back_btn.setLocation(190, 145);
+		add(back_btn);
 
-      back_btn.addActionListener(new Back_Action());
-      find_btn.addActionListener(new Find_Action());
+		back_btn.addActionListener(new Back_Action());
+		find_btn.addActionListener(new Find_Action());
 
-   }
+	}
 
-   private class Back_Action implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel01");
-         clear_field();
-      }
-   }
+	private class Back_Action implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel01");
+			clear_field();
+		}
+	}
 
-   private class Find_Action implements ActionListener { // ì°¾ê¸° ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         final String sql = "select yvid from yv_user where yvphone_number=? and yvname=?";
-         String name = name_tf.getText();
-         String phone_number = phone_tf.getText();
-         if (name.equals("") || phone_number.equals("")) {
-            JOptionPane.showMessageDialog(null, "ì´ë¦„ê³¼ ì „í™”ë²ˆí˜¸ë¥¼ ëª¨ë‘ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 0);
-            return;
-         }
-         try {
-            cn.pstmt = cn.conn.prepareStatement(sql);
-            cn.pstmt.setString(1, phone_number);
-            cn.pstmt.setString(2, name);
-            cn.rset = cn.pstmt.executeQuery();
-            if (cn.rset.next()) { // ê¸°ì…í•œ ì •ë³´ì™€ ì¼ì¹˜í•˜ëŠ” ì•„ì´ë””ê°€ ìˆë‹¤ë©´
-               JOptionPane.showMessageDialog(null, "ë‹¹ì‹ ì˜ ì•„ì´ë””ëŠ” " + cn.rset.getString("yvid") + " ì…ë‹ˆë‹¤.", "", 1);
-               clear_field();
-               win.change("panel01");
-            } else {
-               JOptionPane.showMessageDialog(null, "ì…ë ¥í•˜ì‹  ì •ë³´ì™€ ì¼ì¹˜í•˜ëŠ” ê³„ì •ì´ ì—†ìŠµë‹ˆë‹¤", "", 2);
-            }
-         } catch (Exception e1) {
-            e1.printStackTrace();
-         }
-         return;
-      }
-   }
+	private class Find_Action implements ActionListener { // Ã£±â ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final String sql = "select yvid from yv_user where yvphone_number=? and yvname=?";
+			String name = name_tf.getText();
+			String phone_number = phone_tf.getText();
+			if (name.equals("") || phone_number.equals("")) {
+				JOptionPane.showMessageDialog(null, "ÀÌ¸§°ú ÀüÈ­¹øÈ£¸¦ ¸ğµÎ ÀÔ·ÂÇØÁÖ¼¼¿ä.", "", 0);
+				return;
+			}
+			try {
+				cn.pstmt = cn.conn.prepareStatement(sql);
+				cn.pstmt.setString(1, phone_number);
+				cn.pstmt.setString(2, name);
+				cn.rset = cn.pstmt.executeQuery();
+				if (cn.rset.next()) { // ±âÀÔÇÑ Á¤º¸¿Í ÀÏÄ¡ÇÏ´Â ¾ÆÀÌµğ°¡ ÀÖ´Ù¸é
+					JOptionPane.showMessageDialog(null, "´ç½ÅÀÇ ¾ÆÀÌµğ´Â " + cn.rset.getString("yvid") + " ÀÔ´Ï´Ù.", "", 1);
+					clear_field();
+					win.change("panel01");
+				} else {
+					JOptionPane.showMessageDialog(null, "ÀÔ·ÂÇÏ½Å Á¤º¸¿Í ÀÏÄ¡ÇÏ´Â °èÁ¤ÀÌ ¾ø½À´Ï´Ù", "", 2);
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			return;
+		}
+	}
 
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      name_tf.setText("");
-      phone_tf.setText("");
-   }
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		name_tf.setText("");
+		phone_tf.setText("");
+	}
 }
 
 @SuppressWarnings("serial")
-class Find_PW_Panel extends JPanel { // 4ë²ˆì§¸ íŒ¨ë„(PWì°¾ê¸°)
-   private static JTextField id_tf = new JTextField();
-   private static JTextField name_tf = new JTextField();
-   private static JTextField phone_tf = new JTextField();
-   private Test win;
-   private static final JLabel label1 = new JLabel("ID:");
-   private static final JLabel label2 = new JLabel("ì´ë¦„:");
-   private static final JLabel label3 = new JLabel("ì „í™”ë²ˆí˜¸:");
-   private static final JButton find_btn = new JButton("ì°¾ê¸°");
-   private static final JButton back_btn = new JButton("ì·¨ì†Œ");
+class Find_PW_Panel extends JPanel { // 4¹øÂ° ÆĞ³Î(PWÃ£±â)
+	private static JTextField id_tf = new JTextField();
+	private static JTextField name_tf = new JTextField();
+	private static JTextField phone_tf = new JTextField();
+	private Test win;
+	private static final JLabel label1 = new JLabel("ID:");
+	private static final JLabel label2 = new JLabel("ÀÌ¸§:");
+	private static final JLabel label3 = new JLabel("ÀüÈ­¹øÈ£:");
+	private static final JButton find_btn = new JButton("Ã£±â");
+	private static final JButton back_btn = new JButton("Ãë¼Ò");
 
-   public Find_PW_Panel(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
+	public Find_PW_Panel(Test win) { // UI±¸¼º
+		setLayout(null);
+		this.win = win;
 
-      label1.setBounds(98, 96, 77, 15);
-      add(label1);
+		label1.setBounds(98, 96, 77, 15);
+		add(label1);
 
-      id_tf.setBounds(123, 93, 160, 21);
-      add(id_tf);
-      id_tf.setColumns(10);
+		id_tf.setBounds(123, 93, 160, 21);
+		add(id_tf);
+		id_tf.setColumns(10);
 
-      label2.setBounds(84, 130, 77, 15);
-      add(label2);
+		label2.setBounds(84, 130, 77, 15);
+		add(label2);
 
-      name_tf.setBounds(123, 127, 160, 21);
-      add(name_tf);
-      name_tf.setColumns(10);
+		name_tf.setBounds(123, 127, 160, 21);
+		add(name_tf);
+		name_tf.setColumns(10);
 
-      label3.setBounds(59, 164, 107, 15);
-      add(label3);
+		label3.setBounds(59, 164, 107, 15);
+		add(label3);
 
-      phone_tf.setBounds(123, 161, 160, 21);
-      add(phone_tf);
+		phone_tf.setBounds(123, 161, 160, 21);
+		add(phone_tf);
 
-      find_btn.setSize(120, 25);
-      find_btn.setLocation(50, 215);
-      add(find_btn);
+		find_btn.setSize(120, 25);
+		find_btn.setLocation(50, 215);
+		add(find_btn);
 
-      back_btn.setSize(120, 25);
-      back_btn.setLocation(190, 215);
-      add(back_btn);
+		back_btn.setSize(120, 25);
+		back_btn.setLocation(190, 215);
+		add(back_btn);
 
-      back_btn.addActionListener(new Back_Action());
-      find_btn.addActionListener(new Find_Action());
+		back_btn.addActionListener(new Back_Action());
+		find_btn.addActionListener(new Find_Action());
 
-   }
+	}
 
-   private class Back_Action implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel01");
-         clear_field();
-      }
-   }
+	private class Back_Action implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel01");
+			clear_field();
+		}
+	}
 
-   private class Find_Action implements ActionListener { // ì°¾ê¸° ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         final String sql = "select yvuserno from yv_user where yvid=? and yvphone_number=? and yvname=?";
-         String id = id_tf.getText();
-         String name = name_tf.getText();
-         String phone_number = phone_tf.getText();
-         if (id.equals("") || name.equals("") || phone_number.equals("")) {
-            JOptionPane.showMessageDialog(null, "ë¹ˆì¹¸ì—†ì´ ì •ë³´ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 0);
-            return;
-         }
-         try {
-            cn.pstmt = cn.conn.prepareStatement(sql);
-            cn.pstmt.setString(1, id);
-            cn.pstmt.setString(2, phone_number);
-            cn.pstmt.setString(3, name);
-            cn.rset = cn.pstmt.executeQuery();
-            if (cn.rset.next()) { // ê¸°ì…í•œ ì •ë³´ì™€ ì¼ì¹˜í•˜ëŠ” ì•„ì´ë””ê°€ ìˆë‹¤ë©´
-               cn.userno = cn.rset.getInt("yvuserno");
-               JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ ì„¤ì • ì°½ìœ¼ë¡œ ì´ë™í•©ë‹ˆë‹¤.", "", 1);
-               cn.condition = true;
-               clear_field();
-               win.change("panel07");
-            } else {
-               JOptionPane.showMessageDialog(null, "ì…ë ¥í•˜ì‹  ì •ë³´ì™€ ì¼ì¹˜í•˜ëŠ” ê³„ì •ì´ ì—†ìŠµë‹ˆë‹¤", "", 2);
-            }
-         } catch (Exception e1) {
-            e1.printStackTrace();
-         }
-         return;
-      }
-   }
+	private class Find_Action implements ActionListener { // Ã£±â ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final String sql = "select yvuserno from yv_user where yvid=? and yvphone_number=? and yvname=?";
+			String id = id_tf.getText();
+			String name = name_tf.getText();
+			String phone_number = phone_tf.getText();
+			if (id.equals("") || name.equals("") || phone_number.equals("")) {
+				JOptionPane.showMessageDialog(null, "ºóÄ­¾øÀÌ Á¤º¸¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.", "", 0);
+				return;
+			}
+			try {
+				cn.pstmt = cn.conn.prepareStatement(sql);
+				cn.pstmt.setString(1, id);
+				cn.pstmt.setString(2, phone_number);
+				cn.pstmt.setString(3, name);
+				cn.rset = cn.pstmt.executeQuery();
+				if (cn.rset.next()) { // ±âÀÔÇÑ Á¤º¸¿Í ÀÏÄ¡ÇÏ´Â ¾ÆÀÌµğ°¡ ÀÖ´Ù¸é
+					cn.userno = cn.rset.getInt("yvuserno");
+					JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£ ¼³Á¤ Ã¢À¸·Î ÀÌµ¿ÇÕ´Ï´Ù.", "", 1);
+					cn.condition = true;
+					clear_field();
+					win.change("panel07");
+				} else {
+					JOptionPane.showMessageDialog(null, "ÀÔ·ÂÇÏ½Å Á¤º¸¿Í ÀÏÄ¡ÇÏ´Â °èÁ¤ÀÌ ¾ø½À´Ï´Ù", "", 2);
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			return;
+		}
+	}
 
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      id_tf.setText("");
-      name_tf.setText("");
-      phone_tf.setText("");
-   }
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		id_tf.setText("");
+		name_tf.setText("");
+		phone_tf.setText("");
+	}
 }
 
 @SuppressWarnings("serial")
-class Confirm_PW_Panel extends JPanel { // 5ë²ˆì§¸ íŒ¨ë„ (ë¹„ë°€ë²ˆí˜¸(ë³¸ì¸)í™•ì¸ í™”ë©´)
-   private Test win;
-   private static JPasswordField pw_pf = new JPasswordField();
-   private static final JLabel label1 = new JLabel("í˜„ì¬ ë¹„ë°€ë²ˆí˜¸:");
-   private static final JButton verify_btn = new JButton("í™•ì¸");
-   private static final JButton back_btn = new JButton("ì·¨ì†Œ");
+class Confirm_PW_Panel extends JPanel { // 5¹øÂ° ÆĞ³Î (ºñ¹Ğ¹øÈ£(º»ÀÎ)È®ÀÎ È­¸é)
+	private Test win;
+	private static JPasswordField pw_pf = new JPasswordField();
+	private static final JLabel label1 = new JLabel("ÇöÀç ºñ¹Ğ¹øÈ£:");
+	private static final JButton verify_btn = new JButton("È®ÀÎ");
+	private static final JButton back_btn = new JButton("Ãë¼Ò");
 
-   public Confirm_PW_Panel(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
+	public Confirm_PW_Panel(Test win) { // UI±¸¼º
+		setLayout(null);
+		this.win = win;
 
-      label1.setBounds(45, 67, 107, 15);
-      add(label1);
+		label1.setBounds(45, 67, 107, 15);
+		add(label1);
 
-      pw_pf.setBounds(140, 64, 160, 21);
-      add(pw_pf);
-      pw_pf.setColumns(10);
+		pw_pf.setBounds(140, 64, 160, 21);
+		add(pw_pf);
+		pw_pf.setColumns(10);
 
-      verify_btn.setSize(100, 25);
-      verify_btn.setLocation(75, 150);
-      add(verify_btn);
+		verify_btn.setSize(100, 25);
+		verify_btn.setLocation(75, 150);
+		add(verify_btn);
 
-      back_btn.setSize(100, 25);
-      back_btn.setLocation(190, 150);
-      add(back_btn);
-      back_btn.addActionListener(new Back_Action());
-      verify_btn.addActionListener(new Verify_Action());
-   }
+		back_btn.setSize(100, 25);
+		back_btn.setLocation(190, 150);
+		add(back_btn);
+		back_btn.addActionListener(new Back_Action());
+		verify_btn.addActionListener(new Verify_Action());
+	}
 
-   private class Back_Action implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-         clear_field();
-      }
-   }
+	private class Back_Action implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+			clear_field();
+		}
+	}
 
-   private class Verify_Action implements ActionListener { // í™•ì¸ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         final String sql = "select yvpw from yv_user where yvuserno=?";
-         String pw = String.copyValueOf(pw_pf.getPassword());
-         if (pw.equals("")) {
-            JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 0);
-            return;
-         } else {
-            try {
-               cn.pstmt = cn.conn.prepareStatement(sql);
-               cn.pstmt.setInt(1, cn.userno);
-               cn.rset = cn.pstmt.executeQuery();
-               if (cn.rset.next()) {
-                  if (cn.rset.getString("yvpw").equals(pw)) {
-                     if (cn.condition)
-                        win.change("panel09");
-                     else
-                        win.change("panel07");
-                     clear_field();
-                     return;
-                  }
-               }
-            } catch (Exception e1) {
-               e1.printStackTrace();
-            }
-         }
-         JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", "", 2);
-         return;
-      }
-   }
+	private class Verify_Action implements ActionListener { // È®ÀÎ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final String sql = "select yvpw from yv_user where yvuserno=?";
+			String pw = String.copyValueOf(pw_pf.getPassword());
+			if (pw.equals("")) {
+				JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.", "", 0);
+				return;
+			} else {
+				try {
+					cn.pstmt = cn.conn.prepareStatement(sql);
+					cn.pstmt.setInt(1, cn.userno);
+					cn.rset = cn.pstmt.executeQuery();
+					if (cn.rset.next()) {
+						if (cn.rset.getString("yvpw").equals(pw)) {
+							if (cn.condition)
+								win.change("panel09");
+							else
+								win.change("panel07");
+							clear_field();
+							return;
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+			JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.", "", 2);
+			return;
+		}
+	}
 
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      pw_pf.setText("");
-   }
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		pw_pf.setText("");
+	}
 
 }
 
 @SuppressWarnings("serial")
-class MainPanel extends JPanel { // 6ë²ˆì§¸ íŒ¨ë„ (ë©”ì¸ë©”ë‰´)
-   private Test win;
-   private static final String sql1 = "SELECT hospitalno, adate FROM appoint WHERE yvuserno = ?";
-   private static final JButton user_mod_btn = new JButton("íšŒì›ì •ë³´ ìˆ˜ì •");
-   private static final JButton back_btn = new JButton("ë¡œê·¸ì•„ì›ƒ");
-   private static final JButton appoint_btn = new JButton("ì ‘ì¢… ì˜ˆì•½");
-   private static final JButton inquiry_btn = new JButton("ì ‘ì¢… ì¡°íšŒ");
-   private static final JButton cancel_btn = new JButton("ì ‘ì¢… ì·¨ì†Œ");
-   private static final JButton hospital_mod_btn = new JButton("ë³‘ì›ë¦¬ìŠ¤íŠ¸ ìˆ˜ì •");
-   private static final JButton vaccine_mod_btn = new JButton("ë°±ì‹  ì¬ê³ ë¦¬ìŠ¤íŠ¸ ìˆ˜ì •");
-   private static final JButton commu_btn = new JButton("ê²Œì‹œíŒ");
+class MainPanel extends JPanel { // 6¹øÂ° ÆĞ³Î (¸ŞÀÎ¸Ş´º)
+	private Test win;
+	private static final JButton user_mod_btn = new JButton("È¸¿øÁ¤º¸ ¼öÁ¤");
+	private static final JButton back_btn = new JButton("·Î±×¾Æ¿ô");
+	private static final JButton appoint_btn = new JButton("Á¢Á¾ ¿¹¾à");
+	private static final JButton inquiry_btn = new JButton("Á¢Á¾ Á¶È¸");
+	private static final JButton cancel_btn = new JButton("Á¢Á¾ Ãë¼Ò");
+	private static final JButton hospital_mod_btn = new JButton("º´¿ø¸®½ºÆ® ¼öÁ¤");
+	private static final JButton vaccine_mod_btn = new JButton("¹é½Å Àç°í¸®½ºÆ® ¼öÁ¤");
+	private static final JButton commu_btn = new JButton("°Ô½ÃÆÇ");
 
-   public MainPanel(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
+	public MainPanel(Test win) { // UI±¸¼º
+		setLayout(null);
+		this.win = win;
 
-      user_mod_btn.setSize(120, 20);
-      user_mod_btn.setLocation(10, 15);
-      add(user_mod_btn);
+		user_mod_btn.setSize(120, 20);
+		user_mod_btn.setLocation(10, 15);
+		add(user_mod_btn);
 
-      back_btn.setSize(90, 20);
-      back_btn.setLocation(268, 15);
-      add(back_btn);
+		back_btn.setSize(90, 20);
+		back_btn.setLocation(268, 15);
+		add(back_btn);
 
-      appoint_btn.setSize(160, 28);
-      appoint_btn.setLocation(98, 115);
-      add(appoint_btn);
+		appoint_btn.setSize(160, 28);
+		appoint_btn.setLocation(98, 115);
+		add(appoint_btn);
 
-      inquiry_btn.setSize(160, 28);
-      inquiry_btn.setLocation(98, 160);
-      add(inquiry_btn);
+		inquiry_btn.setSize(160, 28);
+		inquiry_btn.setLocation(98, 160);
+		add(inquiry_btn);
 
-      cancel_btn.setSize(160, 28);
-      cancel_btn.setLocation(98, 205);
-      add(cancel_btn);
+		cancel_btn.setSize(160, 28);
+		cancel_btn.setLocation(98, 205);
+		add(cancel_btn);
 
-      hospital_mod_btn.setSize(160, 28);
-      hospital_mod_btn.setLocation(98, 250);
-      add(hospital_mod_btn);
+		hospital_mod_btn.setSize(160, 28);
+		hospital_mod_btn.setLocation(98, 250);
+		add(hospital_mod_btn);
 
-      vaccine_mod_btn.setSize(160, 28);
-      vaccine_mod_btn.setLocation(98, 295);
-      add(vaccine_mod_btn);
+		vaccine_mod_btn.setSize(160, 28);
+		vaccine_mod_btn.setLocation(98, 295);
+		add(vaccine_mod_btn);
 
-      commu_btn.setSize(160, 28);
-      commu_btn.setLocation(98, 340);
-      add(commu_btn);
+		commu_btn.setSize(160, 28);
+		commu_btn.setLocation(98, 340);
+		add(commu_btn);
 
-      user_mod_btn.addActionListener(new User_Mod_Action());
-      appoint_btn.addActionListener(new Appoint_Action());
-      inquiry_btn.addActionListener(new Inquiry_Action());
-      back_btn.addActionListener(new Back_Action());
-      hospital_mod_btn.addActionListener(new Hospital_Mod_Action());
-      vaccine_mod_btn.addActionListener(new Vaccine_Mod_Action());
-      cancel_btn.addActionListener(new Cancel_Action());
-      commu_btn.addActionListener(new Commu_Action());
+		user_mod_btn.addActionListener(new User_Mod_Action());
+		appoint_btn.addActionListener(new Appoint_Action());
+		inquiry_btn.addActionListener(new Inquiry_Action());
+		back_btn.addActionListener(new Back_Action());
+		hospital_mod_btn.addActionListener(new Hospital_Mod_Action());
+		vaccine_mod_btn.addActionListener(new Vaccine_Mod_Action());
+		cancel_btn.addActionListener(new Cancel_Action());
+		commu_btn.addActionListener(new BoardList_Action());
 
-   }
+	}
 
-   void menu_manage() {
-      if (cn.ismanage) {
-         vaccine_mod_btn.setVisible(true);
-         hospital_mod_btn.setVisible(true);
-      } else {
-         vaccine_mod_btn.setVisible(false);
-         hospital_mod_btn.setVisible(false);
-      }
-   }
+	void menu_manage() {
+		if (cn.ismanage) {
+			vaccine_mod_btn.setVisible(true);
+			hospital_mod_btn.setVisible(true);
+		} else {
+			vaccine_mod_btn.setVisible(false);
+			hospital_mod_btn.setVisible(false);
+		}
+	}
 
-   private class Commu_Action implements ActionListener {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel15");
-      }
-   }
+	private class BoardList_Action implements ActionListener { // °Ô½ÃÆÇ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			new BoardList();
+			BoardDAO dao = new BoardDAOImpl();
+			dao.get_userid(cn.userno);
+		}
+	}
 
-   private class User_Mod_Action implements ActionListener { // íšŒì›ì •ë³´ ìˆ˜ì • ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         cn.condition = false;
-         win.change("panel05");
-      }
-   }
+	private class User_Mod_Action implements ActionListener { // È¸¿øÁ¤º¸ ¼öÁ¤ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			cn.condition = false;
+			win.change("panel05");
+		}
+	}
 
-   private class Appoint_Action implements ActionListener { // ì˜ˆì•½ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         if (!is_appoint()) {
-            win.change("panel08");
-         } else
-            JOptionPane.showMessageDialog(null, "ì˜ˆì•½ë‚´ì—­ì´ ìˆìŠµë‹ˆë‹¤.", "", 2);
-      }
-   }
+	private class Appoint_Action implements ActionListener { // ¿¹¾à ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel08");
+		}
+	}
 
-   private class Inquiry_Action implements ActionListener { // ì¡°íšŒ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         if (is_appoint()) {
-            cn.condition = false;
-            win.change("panel09");
-         } else
-            JOptionPane.showMessageDialog(null, "ì˜ˆì•½ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.", "", 2);
-      }
-   }
+	private class Inquiry_Action implements ActionListener { // Á¶È¸ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			cn.condition = false;
+			win.change("panel09");
+		}
+	}
 
-   private class Back_Action implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel01");
-      }
-   }
+	private class Back_Action implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel01");
+		}
+	}
 
-   private class Hospital_Mod_Action implements ActionListener { // ë³‘ì› ê´€ë¦¬ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel12");
-      }
-   }
+	private class Hospital_Mod_Action implements ActionListener { // º´¿ø °ü¸® ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel12");
+		}
+	}
 
-   private class Vaccine_Mod_Action implements ActionListener { // ë°±ì‹  ê´€ë¦¬ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel13");
-      }
-   }
+	private class Vaccine_Mod_Action implements ActionListener { // ¹é½Å °ü¸® ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel13");
+		}
+	}
 
-   private class Cancel_Action implements ActionListener { // ì˜ˆì•½ ì·¨ì†Œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         if (is_appoint()) {
-            cn.condition = true;
-            win.change("panel05");
-         } else
-            JOptionPane.showMessageDialog(null, "ì˜ˆì•½ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.", "", 2);
-      }
-   }
+	private class Cancel_Action implements ActionListener { // ¿¹¾à Ãë¼Ò ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			cn.condition = true;
+			win.change("panel05");
+		}
+	}
 
-   private static boolean is_appoint() {
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql1);
-         cn.pstmt.setInt(1, cn.userno);
-         cn.rset = cn.pstmt.executeQuery();
-         if (cn.rset.next())
-            return true;
-      } catch (Exception e) {
-         System.out.println(e);
-      }
-      return false;
-   }
+	private class MyActionListener8 implements ActionListener { // Á¢Á¾ º¯°æ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel14");
+		}
+	}
+
+	private class MyActionListener9 implements ActionListener { // °Ô½ÃÆÇ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel14");
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class User_Modify_Panel extends JPanel { // 7ë²ˆì§¸ íŒ¨ë„ (ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ë° íšŒì›ì •ë³´ ìˆ˜ì •)
-   private Test win;
-   private static JPasswordField pw_pf = new JPasswordField();
-   private static JPasswordField pw_confirm_pf = new JPasswordField();
-   private static JTextField phone_tf = new JTextField();
-   private static final JLabel label1 = new JLabel("ìƒˆ ë¹„ë°€ë²ˆí˜¸:");
-   private static final JLabel label2 = new JLabel("ìƒˆ ë¹„ë°€ë²ˆí˜¸ í™•ì¸:");
-   private static final JLabel label3 = new JLabel("ìƒˆ ì „í™”ë²ˆí˜¸ ì…ë ¥:");
-   private static JButton modify_btn = new JButton("ë³€ê²½");
-   private static JButton back_btn = new JButton("ì·¨ì†Œ");
+class User_Modify_Panel extends JPanel { // 7¹øÂ° ÆĞ³Î (ºñ¹Ğ¹øÈ£ º¯°æ ¹× È¸¿øÁ¤º¸ ¼öÁ¤)
+	private Test win;
+	private static JPasswordField pw_pf = new JPasswordField();
+	private static JPasswordField pw_confirm_pf = new JPasswordField();
+	private static JTextField phone_tf = new JTextField();
+	private static final JLabel label1 = new JLabel("»õ ºñ¹Ğ¹øÈ£:");
+	private static final JLabel label2 = new JLabel("»õ ºñ¹Ğ¹øÈ£ È®ÀÎ:");
+	private static final JLabel label3 = new JLabel("»õ ÀüÈ­¹øÈ£ ÀÔ·Â:");
+	private static JButton modify_btn = new JButton("º¯°æ");
+	private static JButton back_btn = new JButton("Ãë¼Ò");
 
-   public User_Modify_Panel(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
+	public User_Modify_Panel(Test win) { // UI±¸¼º
+		setLayout(null);
+		this.win = win;
 
-      label1.setBounds(68, 67, 107, 15);
-      add(label1);
+		label1.setBounds(68, 67, 107, 15);
+		add(label1);
 
-      pw_pf.setBounds(145, 64, 160, 21);
-      add(pw_pf);
-      pw_pf.setColumns(10);
+		pw_pf.setBounds(145, 64, 160, 21);
+		add(pw_pf);
+		pw_pf.setColumns(10);
 
-      label2.setBounds(40, 107, 107, 15);
-      add(label2);
+		label2.setBounds(40, 107, 107, 15);
+		add(label2);
 
-      pw_confirm_pf.setBounds(145, 104, 160, 21);
-      add(pw_confirm_pf);
+		pw_confirm_pf.setBounds(145, 104, 160, 21);
+		add(pw_confirm_pf);
 
-      label3.setBounds(40, 147, 107, 15);
-      add(label3);
+		label3.setBounds(40, 147, 107, 15);
+		add(label3);
 
-      phone_tf.setBounds(145, 144, 160, 21);
-      add(phone_tf);
-      phone_tf.setColumns(10);
+		phone_tf.setBounds(145, 144, 160, 21);
+		add(phone_tf);
+		phone_tf.setColumns(10);
 
-      modify_btn.setSize(80, 25);
-      modify_btn.setLocation(100, 190);
-      add(modify_btn);
+		modify_btn.setSize(80, 25);
+		modify_btn.setLocation(100, 190);
+		add(modify_btn);
 
-      back_btn.setSize(80, 25);
-      back_btn.setLocation(190, 190);
-      add(back_btn);
+		back_btn.setSize(80, 25);
+		back_btn.setLocation(190, 190);
+		add(back_btn);
 
-      back_btn.addActionListener(new Back_Action());
-      modify_btn.addActionListener(new Modify_Action());
-   }
+		back_btn.addActionListener(new Back_Action());
+		modify_btn.addActionListener(new Modify_Action());
+	}
 
-   private class Back_Action implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         if (cn.condition)
-            win.change("panel01");
-         else
-            win.change("panel06");
-         clear_field();
-      }
-   }
+	private class Back_Action implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (cn.condition)
+				win.change("panel01");
+			else
+				win.change("panel06");
+			clear_field();
+		}
+	}
 
-   private class Modify_Action implements ActionListener { // ë³€ê²½ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         String pw = String.copyValueOf(pw_pf.getPassword());
-         String pw_confirm = String.copyValueOf(pw_confirm_pf.getPassword());
-         String phone_num = phone_tf.getText();
-         if (pw.equals("") && pw_confirm.equals("") && phone_num.equals("")) {
-            JOptionPane.showMessageDialog(null, "ë³€ê²½ëœ ì‚¬í•­ì´ ì—†ìŠµë‹ˆë‹¤.", "", 2);
-            return;
-         }
+	private class Modify_Action implements ActionListener { // º¯°æ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String pw = String.copyValueOf(pw_pf.getPassword());
+			String pw_confirm = String.copyValueOf(pw_confirm_pf.getPassword());
+			String phone_num = phone_tf.getText();
+			if (pw.equals("") && pw_confirm.equals("") && phone_num.equals("")) {
+				JOptionPane.showMessageDialog(null, "º¯°æµÈ »çÇ×ÀÌ ¾ø½À´Ï´Ù.", "", 2);
+				return;
+			}
 
-         if (pw.equals(pw_confirm)) {
-            for (int i = 0; i < pw.length(); i++) {
-               if (pw.charAt(i) < 0x21 || pw.charAt(i) > 0x7E) {
-                  JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ëŠ” ì˜ë¬¸, ìˆ«ì ë° ì¼ë¶€ íŠ¹ìˆ˜ë¬¸ìë§Œ ì‚¬ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤.", "", 0);
-                  return;
-               }
-            }
+			if (pw.equals(pw_confirm)) {
+				for (int i = 0; i < pw.length(); i++) {
+					if (pw.charAt(i) < 0x21 || pw.charAt(i) > 0x7E) {
+						JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£´Â ¿µ¹®, ¼ıÀÚ ¹× ÀÏºÎ Æ¯¼ö¹®ÀÚ¸¸ »ç¿ë °¡´ÉÇÕ´Ï´Ù.", "", 0);
+						return;
+					}
+				}
 
-            if (pw.length() == 0) {
-               JOptionPane.showMessageDialog(null, "ì „í™”ë²ˆí˜¸ê°€ ìˆ˜ì • ë˜ì—ˆìŠµë‹ˆë‹¤.", "", 1);
-               set_phone(phone_num);
-               clear_field();
-               win.change("panel06");
-               return;
-            } else if (pw.length() < 4) {
-               JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ê°€ ë„ˆë¬´ ì§§ìŠµë‹ˆë‹¤.", "", 0);
-               return;
-            } else if (pw.length() > 20) {
-               JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ê°€ ë„ˆë¬´ ê¹ë‹ˆë‹¤.", "", 0);
-               return;
-            } else {
-               JOptionPane.showMessageDialog(null, "ì¬ì„¤ì •í•œ ë¹„ë°€ë²ˆí˜¸ë¡œ ë¡œê·¸ì¸ í•´ì£¼ì„¸ìš”.", "", 1);
-               if (!phone_num.equals(""))
-                  set_phone(phone_num);
-               set_pw(pw);
-               clear_field();
-               win.change("panel01");
-               return;
-            }
-         } else {
-            JOptionPane.showMessageDialog(null, "ë¹„ë°€ë²ˆí˜¸ ì¬ì…ë ¥ì´ ì˜¬ë°”ë¥´ê²Œ ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", "", 2);
-         }
-         return;
-      }
-   }
+				if (pw.length() == 0) {
+					JOptionPane.showMessageDialog(null, "ÀüÈ­¹øÈ£°¡ ¼öÁ¤ µÇ¾ú½À´Ï´Ù.", "", 1);
+					set_phone(phone_num);
+					clear_field();
+					win.change("panel06");
+					return;
+				} else if (pw.length() < 4) {
+					JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£°¡ ³Ê¹« Âª½À´Ï´Ù.", "", 0);
+					return;
+				} else if (pw.length() > 20) {
+					JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£°¡ ³Ê¹« ±é´Ï´Ù.", "", 0);
+					return;
+				} else {
+					JOptionPane.showMessageDialog(null, "Àç¼³Á¤ÇÑ ºñ¹Ğ¹øÈ£·Î ·Î±×ÀÎ ÇØÁÖ¼¼¿ä.", "", 1);
+					if (!phone_num.equals(""))
+						set_phone(phone_num);
+					set_pw(pw);
+					clear_field();
+					win.change("panel01");
+					return;
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "ºñ¹Ğ¹øÈ£ ÀçÀÔ·ÂÀÌ ¿Ã¹Ù¸£°Ô µÇÁö ¾Ê¾Ò½À´Ï´Ù.", "", 2);
+			}
+			return;
+		}
+	}
 
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      pw_pf.setText("");
-      pw_confirm_pf.setText("");
-      phone_tf.setText("");
-   }
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		pw_pf.setText("");
+		pw_confirm_pf.setText("");
+		phone_tf.setText("");
+	}
 
-   private static void set_phone(String sphone) {
-      final String sql = "update yv_user set yvphone_number = ? where yvuserno = ?";
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setString(1, sphone);
-         cn.pstmt.setInt(2, cn.userno);
-         cn.pstmt.executeUpdate();
-      } catch (Exception e1) {
-         e1.printStackTrace();
-      }
-   }
+	private static void set_phone(String sphone) {
+		final String sql = "update yv_user set yvphone_number = ? where yvuserno = ?";
+		try {
+			cn.pstmt = cn.conn.prepareStatement(sql);
+			cn.pstmt.setString(1, sphone);
+			cn.pstmt.setInt(2, cn.userno);
+			cn.pstmt.executeUpdate();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
 
-   private static void set_pw(String spw) {
-      final String sql = "update yv_user set yvpw = ? where yvuserno = ?";
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setString(1, spw);
-         cn.pstmt.setInt(2, cn.userno);
-         cn.pstmt.executeUpdate();
-      } catch (Exception e1) {
-         e1.printStackTrace();
-      }
-   }
+	private static void set_pw(String spw) {
+		final String sql = "update yv_user set yvpw = ? where yvuserno = ?";
+		try {
+			cn.pstmt = cn.conn.prepareStatement(sql);
+			cn.pstmt.setString(1, spw);
+			cn.pstmt.setInt(2, cn.userno);
+			cn.pstmt.executeUpdate();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
 
-   void is_lost() {
-      if (cn.condition) {
-         label3.setVisible(false);
-         phone_tf.setVisible(false);
-      } else {
-         label3.setVisible(true);
-         phone_tf.setVisible(true);
-      }
-   }
+	void is_lost() {
+		if (cn.condition) {
+			label3.setVisible(false);
+			phone_tf.setVisible(false);
+		} else {
+			label3.setVisible(true);
+			phone_tf.setVisible(true);
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class JPanel08 extends JPanel { // 8ë²ˆì§¸ íŒ¨ë„ (ì ‘ì¢…ì˜ˆì•½ í™”ë©´)
-   private Test win;
-   private static JComboBox<String> name_cb = new JComboBox<String>();
-   private static JComboBox<String> hospital_cb = new JComboBox<String>();
-   private static JComboBox<String> vaccine_cb = new JComboBox<String>();
-   private static ArrayList<Integer> idx = new ArrayList<Integer>();
-   private static final JButton appoint_btn = new JButton("ì˜ˆì•½");
-   private static final JButton back_btn = new JButton("ì·¨ì†Œ");
+class JPanel08 extends JPanel { // 8¹øÂ° ÆĞ³Î (Á¢Á¾¿¹¾à È­¸é)
+	private Test win;
+	private static ArrayList<String> locate_arr = new ArrayList<String>();
+	private static ArrayList<String> hospital_arr = new ArrayList<String>();
+	private static ArrayList<String> vaccine_arr = new ArrayList<String>();
+	private static JComboBox<String> name_cb = new JComboBox<String>();
+	private static JComboBox<String> hospital_cb = new JComboBox<String>();
+	private static JComboBox<String> vaccine_cb = new JComboBox<String>();
+	private static final JButton appoint_btn = new JButton("¿¹¾à");
+	private static final JButton back_btn = new JButton("Ãë¼Ò");
 
-   public JPanel08(Test win) {
+	public JPanel08(Test win) {
 
-      setLayout(null);
-      this.win = win;
+		setLayout(null);
+		this.win = win;
 
-      final String sql = "select distinct hregion from hospital order by hregion";
-      name_cb.setModel(new DefaultComboBoxModel<String>() {
-         boolean selectionAllowed = true;
+		name_cb.setBounds(80, 67, 176, 21);
+		add(name_cb);
 
-         @Override
-         public void setSelectedItem(Object anObject) {
-            if (!"ì§€ì—­ ì„ íƒ".equals(anObject)) {
-               super.setSelectedItem(anObject);
-            } else if (selectionAllowed) {
-               selectionAllowed = false;
-               super.setSelectedItem(anObject);
-            }
-         }
-      });
-      name_cb.addItem("ì§€ì—­ ì„ íƒ");
+		hospital_cb.setBounds(80, 104, 176, 21);
+		add(hospital_cb);
 
-      hospital_cb.setModel(new DefaultComboBoxModel<String>() {
-         boolean selectionAllowed = true;
+		vaccine_cb.setBounds(56, 140, 224, 21);
+		add(vaccine_cb);
 
-         @Override
-         public void setSelectedItem(Object anObject) {
-            if (!"ë³‘ì› ì„ íƒ".equals(anObject)) {
-               super.setSelectedItem(anObject);
-            } else if (selectionAllowed) {
-               selectionAllowed = false;
-               super.setSelectedItem(anObject);
-            }
-         }
-      });
-      hospital_cb.addItem("ë³‘ì› ì„ íƒ");
+		appoint_btn.setSize(60, 25);
+		appoint_btn.setLocation(98, 190);
+		add(appoint_btn);
 
-      vaccine_cb.setModel(new DefaultComboBoxModel<String>() {
-         boolean selectionAllowed = true;
+		back_btn.setSize(60, 25);
+		back_btn.setLocation(178, 190);
+		add(back_btn);
 
-         @Override
-         public void setSelectedItem(Object anObject) {
-            if (!"ë°±ì‹  ì„ íƒ".equals(anObject)) {
-               super.setSelectedItem(anObject);
-            } else if (selectionAllowed) {
-               selectionAllowed = false;
-               super.setSelectedItem(anObject);
-            }
-         }
-      });
-      vaccine_cb.addItem("ë°±ì‹  ì„ íƒ");
+		back_btn.addActionListener(new MyActionListener());
+		appoint_btn.addActionListener(new MyActionListener2());
 
-      try {
-         cn.stmt = cn.conn.createStatement();
-         cn.rset = cn.stmt.executeQuery(sql);
-         while (cn.rset.next()) {
-            name_cb.addItem(cn.rset.getString("hregion"));
-         }
-      } catch (Exception e) {
-         System.out.println(e);
-      }
+		/*
+		 * locate.toArray(new String[locate.size()]) hospital.toArray(new
+		 * String[hospital.size()]) vaccine.toArray(new String[vaccine.size()])
+		 */
 
-      name_cb.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            JComboBox<String> cb = (JComboBox) e.getSource();
-            String choice = (String) cb.getSelectedItem();
-            update_Hlist(choice);
-         }
-      });
+	}
 
-      name_cb.setBounds(80, 67, 176, 21);
-      add(name_cb);
+	private class MyActionListener implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 
-      hospital_cb.setBounds(80, 104, 176, 21);
-      add(hospital_cb);
-
-      vaccine_cb.setBounds(56, 140, 224, 21);
-      add(vaccine_cb);
-
-      appoint_btn.setSize(60, 25);
-      appoint_btn.setLocation(98, 190);
-      add(appoint_btn);
-
-      back_btn.setSize(60, 25);
-      back_btn.setLocation(178, 190);
-      add(back_btn);
-
-      back_btn.addActionListener(new MyActionListener());
-      appoint_btn.addActionListener(new MyActionListener2());
-   }
-
-   private class MyActionListener implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         clear_field();
-         win.change("panel06");
-      }
-   }
-
-   private class MyActionListener2 implements ActionListener { // ì˜ˆì•½ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         clear_field();
-         win.change("panel06");
-      }
-   }
-
-   void update_Hlist(String hre) {
-      final String sql1 = "select hospitalno from hospital h where exists (select 1 from vaccine v where h.hospitalno = v.hospitalno) and hregion = ? order by hname";
-      final String sql2 = "select hname, hcall_number from hospital where hospitalno = ?";
-      ResultSet rs_tmp;
-      hospital_cb.removeAllItems();
-      hospital_cb.addItem("ë³‘ì› ì„ íƒ");
-      idx.clear();
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql1);
-         cn.pstmt.setString(1, hre);
-         cn.rset = cn.pstmt.executeQuery();
-         while (cn.rset.next()) {
-            cn.pstmt = cn.conn.prepareStatement(sql2);
-            int no_tmp = cn.rset.getInt("hospitalno");
-            idx.add(no_tmp);
-            cn.pstmt.setInt(1, no_tmp);
-            rs_tmp = cn.pstmt.executeQuery();
-            rs_tmp.next();
-            hospital_cb.addItem(rs_tmp.getString("hname") + " " + rs_tmp.getString("hcall_number"));
-         }
-      } catch (Exception e) {
-         System.out.println(e);
-      }
-
-      hospital_cb.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            JComboBox<String> cb = (JComboBox) e.getSource();
-            int choice = cb.getSelectedIndex();
-            update_Vlist(idx.get(choice - 1).intValue());
-         }
-      });
-   }
-
-   void update_Vlist(int hno) {
-      final String sql = "select vname, vdate from vaccine where hospitalno = ?";
-      vaccine_cb.removeAllItems();
-      vaccine_cb.addItem("ë°±ì‹  ì„ íƒ");
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setInt(1, hno);
-         cn.rset = cn.pstmt.executeQuery();
-         while (cn.rset.next()) {
-            vaccine_cb.addItem(cn.rset.getString("vname") + " " + cn.rset.getString("vdate"));
-         }
-      } catch (Exception e) {
-         System.out.println(e);
-      }
-      
-      vaccine_cb.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            JComboBox<String> cb = (JComboBox) e.getSource();
-            String choice = (String) cb.getSelectedItem();
-         }
-      });
-   }
-
-   private static void clear_field() {
-      name_cb.removeAllItems();
-      name_cb.addItem("ì§€ì—­ ì„ íƒ");
-      hospital_cb.removeAllItems();
-      hospital_cb.addItem("ë³‘ì› ì„ íƒ");
-      vaccine_cb.removeAllItems();
-      vaccine_cb.addItem("ë°±ì‹  ì„ íƒ");
-   }
+	private class MyActionListener2 implements ActionListener { // ¿¹¾à ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class JPanel09 extends JPanel { // 9ë²ˆì§¸ íŒ¨ë„ (ì˜ˆì•½ ì¡°íšŒ ë° ì˜ˆì•½ ì·¨ì†Œ)
-   private Test win;
-   private static final String sql1 = "SELECT hospitalno, adate FROM appoint WHERE yvuserno = ?";
-   private static final String sql2 = "SELECT yvname FROM YV_USER WHERE yvuserno = ?";
-   private static final String sql3 = "SELECT hname FROM hospital WHERE hospitalno = ?";
-   private static JLabel label1 = new JLabel();
-   private static JLabel label2 = new JLabel();
-   private static JLabel label3 = new JLabel();
-   private static JLabel label4 = new JLabel();
-   private static final JLabel label5 = new JLabel("ì •ë§ ì·¨ì†Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?");
-   private static final JButton back_btn = new JButton("í™•ì¸");
-   private static final JButton confirm_btn = new JButton("ì˜ˆì•½ì·¨ì†Œ");
-   private static final JButton back2_btn = new JButton("ëŒì•„ê°€ê¸°");
+class JPanel09 extends JPanel { // 9¹øÂ° ÆĞ³Î (¿¹¾à Á¶È¸ ¹× ¿¹¾à Ãë¼Ò)
+	private Test win;
+	private static final JLabel label1 = new JLabel("xxx´ÔÀÇ Á¢Á¾ÀÏÀº");
+	private static final JLabel label2 = new JLabel("xxxº´¿ø");
+	private static final JLabel label3 = new JLabel("YYYY-MM-DD");
+	private static final JLabel label4 = new JLabel("hh:mm ÀÔ´Ï´Ù.");
+	private static final JLabel label5 = new JLabel("Á¤¸» Ãë¼ÒÇÏ½Ã°Ú½À´Ï±î?");
+	private static final JButton back_btn = new JButton("È®ÀÎ");
+	private static final JButton confirm_btn = new JButton("¿¹¾àÃë¼Ò");
+	private static final JButton back2_btn = new JButton("µ¹¾Æ°¡±â");
 
-   public JPanel09(Test win) { // UIêµ¬ì„±
-      setLayout(null);
-      this.win = win;
-      label1.setFont(new Font("Serif", Font.BOLD, 20));
-      label1.setHorizontalAlignment(JLabel.CENTER);
-      label1.setBounds(-20, 20, 400, 50);
-      add(label1);
+	public JPanel09(Test win) { // UI±¸¼º
 
-      label2.setFont(new Font("Serif", Font.BOLD, 23));
-      label2.setHorizontalAlignment(JLabel.CENTER);
-      label2.setBounds(-20, 45, 400, 50);
-      add(label2);
+		setLayout(null);
+		this.win = win;
 
-      label3.setFont(new Font("Serif", Font.BOLD, 23));
-      label3.setHorizontalAlignment(JLabel.CENTER);
-      label3.setBounds(-20, 70, 400, 50);
-      add(label3);
+		label1.setFont(new Font("Serif", Font.BOLD, 20));
+		label1.setHorizontalAlignment(JLabel.CENTER);
+		label1.setBounds(-20, 20, 400, 50);
+		add(label1);
 
-      label4.setFont(new Font("Serif", Font.BOLD, 23));
-      label4.setHorizontalAlignment(JLabel.CENTER);
-      label4.setBounds(-20, 95, 400, 50);
-      add(label4);
+		label2.setFont(new Font("Serif", Font.BOLD, 23));
+		label2.setHorizontalAlignment(JLabel.CENTER);
+		label2.setBounds(-20, 45, 400, 50);
+		add(label2);
 
-      label5.setFont(new Font("Serif", Font.BOLD, 27));
-      label5.setHorizontalAlignment(JLabel.CENTER);
-      label5.setBounds(-20, 135, 400, 50);
-      add(label5);
+		label3.setFont(new Font("Serif", Font.BOLD, 23));
+		label3.setHorizontalAlignment(JLabel.CENTER);
+		label3.setBounds(-20, 70, 400, 50);
+		add(label3);
 
-      back_btn.setSize(80, 25);
-      back_btn.setLocation(142, 165);
-      add(back_btn);
+		label4.setFont(new Font("Serif", Font.BOLD, 23));
+		label4.setHorizontalAlignment(JLabel.CENTER);
+		label4.setBounds(-20, 95, 400, 50);
+		add(label4);
 
-      confirm_btn.setSize(85, 25);
-      confirm_btn.setLocation(90, 205);
-      add(confirm_btn);
+		label5.setFont(new Font("Serif", Font.BOLD, 27));
+		label5.setHorizontalAlignment(JLabel.CENTER);
+		label5.setBounds(-20, 135, 400, 50);
+		add(label5);
 
-      back2_btn.setSize(85, 25);
-      back2_btn.setLocation(190, 205);
-      add(back2_btn);
+		back_btn.setSize(80, 25);
+		back_btn.setLocation(142, 165);
+		add(back_btn);
 
-      back_btn.addActionListener(new MyActionListener());
-      back2_btn.addActionListener(new MyActionListener());
-      confirm_btn.addActionListener(new MyActionListener2());
-   }
+		confirm_btn.setSize(85, 25);
+		confirm_btn.setLocation(90, 205);
+		add(confirm_btn);
 
-   void is_inquiry() {
-      if (cn.condition) {
-         back_btn.setVisible(false);
-         label5.setVisible(true);
-         back2_btn.setVisible(true);
-         confirm_btn.setVisible(true);
-      } else {
-         back_btn.setVisible(true);
-         label5.setVisible(false);
-         back2_btn.setVisible(false);
-         confirm_btn.setVisible(false);
-      }
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql1);
-         cn.pstmt.setInt(1, cn.userno);
-         cn.rset = cn.pstmt.executeQuery();
-         cn.rset.next();
-         int no_tmp = cn.rset.getInt("hospitalno");
-         Date appointdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(cn.rset.getString("adate"));
-         SimpleDateFormat format1 = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼");
-         SimpleDateFormat format2 = new SimpleDateFormat("HHì‹œ mmë¶„");
-         label3.setText(format1.format(appointdate));
-         label4.setText(format2.format(appointdate) + "ì…ë‹ˆë‹¤");
+		back2_btn.setSize(85, 25);
+		back2_btn.setLocation(190, 205);
+		add(back2_btn);
 
-         cn.pstmt = cn.conn.prepareStatement(sql2);
-         cn.pstmt.setInt(1, cn.userno);
-         cn.rset = cn.pstmt.executeQuery();
-         cn.rset.next();
-         label1.setText(cn.rset.getString("yvname") + "ë‹˜ì˜ ì ‘ì¢…ì¼ì€");
+		back_btn.addActionListener(new MyActionListener());
+		back2_btn.addActionListener(new MyActionListener());
+		confirm_btn.addActionListener(new MyActionListener2());
+	}
 
-         cn.pstmt = cn.conn.prepareStatement(sql3);
-         cn.pstmt.setInt(1, no_tmp);
-         cn.rset = cn.pstmt.executeQuery();
-         cn.rset.next();
-         label2.setText(cn.rset.getString("hname"));
-      } catch (Exception e) {
-         System.out.println(e);
-      }
-   }
+	void is_inquiry() {
+		if (cn.condition) {
+			back_btn.setVisible(false);
+			label5.setVisible(true);
+			back2_btn.setVisible(true);
+			confirm_btn.setVisible(true);
+		} else {
+			back_btn.setVisible(true);
+			label5.setVisible(false);
+			back2_btn.setVisible(false);
+			confirm_btn.setVisible(false);
+		}
+	}
 
-   private class MyActionListener implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
+	private class MyActionListener implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 
-   private class MyActionListener2 implements ActionListener { // ì˜ˆì•½ì·¨ì†Œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
+	private class MyActionListener2 implements ActionListener { // ¿¹¾àÃë¼Ò ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class JPanel12 extends JPanel { // 12ë²ˆì§¸ íŒ¨ë„ (ë³‘ì›ë¦¬ìŠ¤íŠ¸ ìˆ˜ì •)
-   private Test win;
-   private static ArrayList<String> locate_arr = new ArrayList<String>();
-   private static final JLabel label1 = new JLabel("ë³‘ì›ì´ë¦„ ì…ë ¥");
-   private static final JLabel label2 = new JLabel("ì „í™”ë²ˆí˜¸ ì…ë ¥");
-   private static final JButton back_btn = new JButton("ë’¤ë¡œ");
-   private static final JButton add_btn = new JButton("ì¶”ê°€");
-   private static final JButton del_btn = new JButton("ì‚­ì œ");
+class JPanel10 extends JPanel { // 10¹øÂ° ÆĞ³Î (±Û¾²±â È­¸é)
+	private JTextField textField;
+	private Test win;
 
-   public JPanel12(Test win) {
+	public JPanel10(Test win) {
+		String[] vac_list = { "È­ÀÌÀÚ", "¸ğ´õ³ª", "¾Æ½ºÆ®¶óÁ¦³×Ä«", "¾á¼¾" };
 
-      setLayout(null);
-      this.win = win;
+		setLayout(null);
+		this.win = win;
 
-      back_btn.setSize(70, 20);
-      back_btn.setLocation(10, 15);
-      add(back_btn);
+		JComboBox<String> vacCombo = new JComboBox<String>(vac_list);
+		vacCombo.setBounds(80, 67, 110, 21);
+		add(vacCombo);
 
-      JComboBox<String> nameCombo = new JComboBox<String>();
-      nameCombo.setBounds(113, 67, 140, 21);
-      add(nameCombo);
-      nameCombo.setModel(new DefaultComboBoxModel<String>() {
-         boolean selectionAllowed = true;
+		textField = new JTextField();
+		textField.setBounds(200, 67, 170, 21);
+		add(textField);
+		textField.setColumns(10);
 
-         @Override
-         public void setSelectedItem(Object anObject) {
-            if (!"ì§€ì—­ ì„ íƒ".equals(anObject)) {
-               super.setSelectedItem(anObject);
-            } else if (selectionAllowed) {
-               selectionAllowed = false;
-               super.setSelectedItem(anObject);
-            }
-         }
-      });
-      nameCombo.addItem("ì§€ì—­ ì„ íƒ");
-      /* locate.toArray(new String[locate.size()]) */
+		JButton loginBtn = new JButton("¿¹¾à");
+		loginBtn.setSize(60, 25);
+		loginBtn.setLocation(98, 190);
+		add(loginBtn);
 
-      label1.setBounds(25, 110, 150, 15);
-      add(label1);
+		JButton backBtn = new JButton("Ãë¼Ò");
+		backBtn.setSize(60, 25);
+		backBtn.setLocation(178, 190);
+		add(backBtn);
+		backBtn.addActionListener(new MyActionListener());
 
-      JTextField input_hName = new JTextField();
-      input_hName.setBounds(113, 107, 140, 21);
-      add(input_hName);
-      input_hName.setColumns(10);
+		loginBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "°æ°íÃ¢ !");
 
-      label2.setBounds(25, 155, 150, 15);
-      add(label2);
+			}
+		});
 
-      JTextField input_pNumber = new JTextField();
-      input_pNumber.setBounds(113, 153, 140, 21);
-      add(input_pNumber);
-      input_pNumber.setColumns(10);
+	}
 
-      add_btn.setSize(60, 23);
-      add_btn.setLocation(112, 195);
-      add(add_btn);
-
-      del_btn.setSize(60, 23);
-      del_btn.setLocation(192, 195);
-      add(del_btn);
-
-      back_btn.addActionListener(new MyActionListener3());
-
-      add_btn.addActionListener(new MyActionListener2());
-
-      del_btn.addActionListener(new MyActionListener1());
-
-   }
-
-   private class MyActionListener1 implements ActionListener { // ì¶”ê°€ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
-
-   private class MyActionListener2 implements ActionListener { // ì‚­ì œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
-
-   private class MyActionListener3 implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
+	private class MyActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel01");
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class JPanel13 extends JPanel { // 13ë²ˆì§¸ (ë°±ì‹  ì¬ê³ ë¦¬ìŠ¤íŠ¸ ìˆ˜ì •)
-   private Test win;
-   private static JTextField volume_tf = new JTextField();
-   private static JTextField input_time = new JTextField();
-   private static ArrayList<String> locate_arr = new ArrayList<String>();
-   private static ArrayList<String> hospital_arr = new ArrayList<String>();
-   private static ArrayList<String> vaccine_arr = new ArrayList<String>();
-   private static JComboBox<String> name_cb = new JComboBox<String>();
-   private static JComboBox<String> hospital_cb = new JComboBox<String>();
-   private static JComboBox<String> vaccine_cb = new JComboBox<String>();
-   private static final JLabel lblLb1 = new JLabel("ì‹œê°„");
-   private static final JLabel lblLb2 = new JLabel("ì¬ê³ ");
-   private static final JButton add_btn = new JButton("ì¶”ê°€");
-   private static final JButton del_btn = new JButton("ì‚­ì œ");
-   private static final JButton back_btn = new JButton("ë’¤ë¡œ");
-   private static final JButton addVacType = new JButton("ë°±ì‹ ì¢…ë¥˜ì¶”ê°€");
+class JPanel12 extends JPanel { // 12¹øÂ° ÆĞ³Î (º´¿ø¸®½ºÆ® ¼öÁ¤)
+	private Test win;
+	private static ArrayList<String> locate_arr = new ArrayList<String>();
+	private static final JLabel label1 = new JLabel("º´¿øÀÌ¸§ ÀÔ·Â");
+	private static final JLabel label2 = new JLabel("ÀüÈ­¹øÈ£ ÀÔ·Â");
+	private static final JButton back_btn = new JButton("µÚ·Î");
+	private static final JButton add_btn = new JButton("Ãß°¡");
+	private static final JButton del_btn = new JButton("»èÁ¦");
 
-   public JPanel13(Test win) {
+	public JPanel12(Test win) {
 
-      setLayout(null);
-      this.win = win;
+		setLayout(null);
+		this.win = win;
 
-      back_btn.setSize(70, 20);
-      back_btn.setLocation(10, 15);
-      add(back_btn);
+		back_btn.setSize(70, 20);
+		back_btn.setLocation(10, 15);
+		add(back_btn);
 
-      addVacType.setSize(115, 20);
-      addVacType.setLocation(247, 15);
-      add(addVacType);
+		JComboBox<String> nameCombo = new JComboBox<String>();
+		nameCombo.setBounds(113, 67, 140, 21);
+		add(nameCombo);
+		nameCombo.setModel(new DefaultComboBoxModel<String>() {
+			boolean selectionAllowed = true;
 
-      name_cb.setBounds(113, 67, 140, 21);
-      add(name_cb);
+			@Override
+			public void setSelectedItem(Object anObject) {
+				if (!"Áö¿ª ¼±ÅÃ".equals(anObject)) {
+					super.setSelectedItem(anObject);
+				} else if (selectionAllowed) {
+					selectionAllowed = false;
+					super.setSelectedItem(anObject);
+				}
+			}
+		});
+		nameCombo.addItem("Áö¿ª ¼±ÅÃ");
+		/* locate.toArray(new String[locate.size()]) */
 
-      hospital_cb.setBounds(113, 107, 140, 21);
-      add(hospital_cb);
+		label1.setBounds(25, 110, 150, 15);
+		add(label1);
 
-      vaccine_cb.setBounds(113, 147, 140, 21);
-      add(vaccine_cb);
+		JTextField input_hName = new JTextField();
+		input_hName.setBounds(113, 107, 140, 21);
+		add(input_hName);
+		input_hName.setColumns(10);
 
-      /*
-       * locate.toArray(new String[locate.size()]) hospital.toArray(new
-       * String[hospital.size()]) vaccine.toArray(new String[vaccine.size()])
-       */
+		label2.setBounds(25, 155, 150, 15);
+		add(label2);
 
-      lblLb1.setBounds(80, 190, 150, 15);
-      add(lblLb1);
+		JTextField input_pNumber = new JTextField();
+		input_pNumber.setBounds(113, 153, 140, 21);
+		add(input_pNumber);
+		input_pNumber.setColumns(10);
 
-      input_time.setBounds(113, 187, 140, 21);
-      add(input_time);
-      input_time.setColumns(10);
+		add_btn.setSize(60, 23);
+		add_btn.setLocation(112, 195);
+		add(add_btn);
 
-      lblLb2.setBounds(80, 230, 150, 15);
-      add(lblLb2);
+		del_btn.setSize(60, 23);
+		del_btn.setLocation(192, 195);
+		add(del_btn);
 
-      volume_tf.setBounds(113, 227, 140, 21);
-      add(volume_tf);
-      volume_tf.setColumns(10);
+		back_btn.addActionListener(new MyActionListener3());
 
-      add_btn.setSize(60, 23);
-      add_btn.setLocation(112, 272);
-      add(add_btn);
+		add_btn.addActionListener(new MyActionListener2());
 
-      del_btn.setSize(60, 23);
-      del_btn.setLocation(192, 272);
-      add(del_btn);
+		del_btn.addActionListener(new MyActionListener1());
 
-      back_btn.addActionListener(new MyActionListener3());
+	}
 
-      add_btn.addActionListener(new MyActionListener2());
+	private class MyActionListener1 implements ActionListener { // Ãß°¡ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 
-      del_btn.addActionListener(new MyActionListener1());
+	private class MyActionListener2 implements ActionListener { // »èÁ¦ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 
-      addVacType.addActionListener(new MyActionListener4());
-
-   }
-
-   private class MyActionListener1 implements ActionListener { // ì¶”ê°€ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
-
-   private class MyActionListener2 implements ActionListener { // ì‚­ì œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
-
-   private class MyActionListener3 implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel06");
-      }
-   }
-
-   private class MyActionListener4 implements ActionListener { // ë°±ì‹ ì¢…ë¥˜ ì¶”ê°€ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         win.change("panel14");
-      }
-   }
+	private class MyActionListener3 implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class JPanel14 extends JPanel { // 14ë²ˆì§¸ íŒ¨ë„
+class JPanel13 extends JPanel { // 13¹øÂ° (¹é½Å Àç°í¸®½ºÆ® ¼öÁ¤)
+	private Test win;
+	private static JTextField volume_tf = new JTextField();
+	private static JTextField input_time = new JTextField();
+	private static ArrayList<String> locate_arr = new ArrayList<String>();
+	private static ArrayList<String> hospital_arr = new ArrayList<String>();
+	private static ArrayList<String> vaccine_arr = new ArrayList<String>();
+	private static JComboBox<String> name_cb = new JComboBox<String>();
+	private static JComboBox<String> hospital_cb = new JComboBox<String>();
+	private static JComboBox<String> vaccine_cb = new JComboBox<String>();
+	private static final JLabel lblLb1 = new JLabel("½Ã°£");
+	private static final JLabel lblLb2 = new JLabel("Àç°í");
+	private static final JButton add_btn = new JButton("Ãß°¡");
+	private static final JButton del_btn = new JButton("»èÁ¦");
+	private static final JButton back_btn = new JButton("µÚ·Î");
+	private static final JButton addVacType = new JButton("¹é½ÅÁ¾·ùÃß°¡");
 
-   private Test win;
-   private static JTextField vaccine_tf = new JTextField();
-   private static final JLabel label1 = new JLabel("ë°±ì‹ ì´ë¦„");
-   private static final JButton add_btn = new JButton("ì¶”ê°€");
-   private static final JButton del_btn = new JButton("ì‚­ì œ");
-   private static final JButton back_btn = new JButton("ë’¤ë¡œ");
+	public JPanel13(Test win) {
 
-   public JPanel14(Test win) {
+		setLayout(null);
+		this.win = win;
 
-      setLayout(null);
-      this.win = win;
+		back_btn.setSize(70, 20);
+		back_btn.setLocation(10, 15);
+		add(back_btn);
 
-      back_btn.setSize(70, 20);
-      back_btn.setLocation(10, 15);
-      add(back_btn);
+		addVacType.setSize(115, 20);
+		addVacType.setLocation(247, 15);
+		add(addVacType);
 
-      label1.setBounds(60, 190, 150, 15);
-      add(label1);
+		name_cb.setBounds(113, 67, 140, 21);
+		add(name_cb);
 
-      vaccine_tf.setBounds(125, 187, 160, 21);
-      add(vaccine_tf);
-      vaccine_tf.setColumns(10);
+		hospital_cb.setBounds(113, 107, 140, 21);
+		add(hospital_cb);
 
-      add_btn.setSize(80, 23);
-      add_btn.setLocation(98, 272);
-      add(add_btn);
+		vaccine_cb.setBounds(113, 147, 140, 21);
+		add(vaccine_cb);
 
-      del_btn.setSize(80, 23);
-      del_btn.setLocation(188, 272);
-      add(del_btn);
+		/*
+		 * locate.toArray(new String[locate.size()]) hospital.toArray(new
+		 * String[hospital.size()]) vaccine.toArray(new String[vaccine.size()])
+		 */
 
-      back_btn.addActionListener(new MyActionListener3());
+		lblLb1.setBounds(80, 190, 150, 15);
+		add(lblLb1);
 
-      add_btn.addActionListener(new MyActionListener1());
+		input_time.setBounds(113, 187, 140, 21);
+		add(input_time);
+		input_time.setColumns(10);
 
-      del_btn.addActionListener(new MyActionListener2());
+		lblLb2.setBounds(80, 230, 150, 15);
+		add(lblLb2);
 
-   }
+		volume_tf.setBounds(113, 227, 140, 21);
+		add(volume_tf);
+		volume_tf.setColumns(10);
 
-   private class MyActionListener1 implements ActionListener { // ì¶”ê°€ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         final String sql = "insert into VACCINETYPE values(?)";
-         try {
-            cn.pstmt = cn.conn.prepareStatement(sql);
-            cn.pstmt.setString(1, vaccine_tf.getText());
-            cn.pstmt.executeUpdate();
-         } catch (Exception ee) {
-            System.out.println(ee);
-         }
-      }
-   }
+		add_btn.setSize(60, 23);
+		add_btn.setLocation(112, 272);
+		add(add_btn);
 
-   private class MyActionListener2 implements ActionListener { // ì‚­ì œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         final String sql = "delete from VACCINETYPE where vname = ?";
-         try {
-            cn.pstmt = cn.conn.prepareStatement(sql);
-            cn.pstmt.setString(1, vaccine_tf.getText());
-            cn.pstmt.executeUpdate();
-         } catch (Exception ee) {
-            System.out.println(ee);
-         }
-      }
-   }
+		del_btn.setSize(60, 23);
+		del_btn.setLocation(192, 272);
+		add(del_btn);
 
-   private class MyActionListener3 implements ActionListener { // ë’¤ë¡œ ë²„íŠ¼
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         clear_field();
-         win.change("panel13");
-      }
-   }
+		back_btn.addActionListener(new MyActionListener3());
 
-   private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-      vaccine_tf.setText("");
-   }
+		add_btn.addActionListener(new MyActionListener2());
 
+		del_btn.addActionListener(new MyActionListener1());
+
+		addVacType.addActionListener(new MyActionListener4());
+
+	}
+
+	private class MyActionListener1 implements ActionListener { // Ãß°¡ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
+
+	private class MyActionListener2 implements ActionListener { // »èÁ¦ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
+
+	private class MyActionListener3 implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel06");
+		}
+	}
+
+	private class MyActionListener4 implements ActionListener { // ¹é½ÅÁ¾·ù Ãß°¡ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			win.change("panel14");
+		}
+	}
 }
 
 @SuppressWarnings("serial")
-class Community_Panel extends JPanel {
-   private Test win;
-   private static final String[] colNames = new String[] { "ë°±ì‹ ì¢…ë¥˜", "ì œëª©", "ì‘ì„±ì" };
-   private static JTable table = new JTable();
-   private static JTextField searchString = new JTextField();
-   private static JScrollPane scrollPane = new JScrollPane();
-   private static JComboBox<String> search_cb = new JComboBox<String>();
-   private static final JButton search_btn = new JButton("ê²€ìƒ‰");
-   private static final JButton write_btn = new JButton("ê¸€ì‘ì„±");
-   private static final JButton refresh_btn = new JButton("ìƒˆë¡œê³ ì¹¨");
-   private static final JButton back_btn = new JButton("ë‚˜ê°€ê¸°");
-
-   private class CommunityVO {
-
-      int num;
-      String vname;
-      String title;
-      String content;
-      int writer;
-   }
-
-   public Community_Panel(Test win) {
-      setLayout(null);
-      this.win = win;
-
-      scrollPane.setBounds(8, 49, 350, 570);
-      add(scrollPane);
-
-      List<CommunityVO> list = select();
-      Object[][] rowDatas = new Object[list.size()][colNames.length];
-
-      for (int i = 0; i < list.size(); i++) {
-         rowDatas[i] = new Object[] { list.get(i).vname, list.get(i).title, get_userid(list.get(i).writer) };
-      }
-
-      table.setModel(new DefaultTableModel(rowDatas, colNames) {
-         boolean[] columnEditables = new boolean[] { false, false, false };
-
-         public boolean isCellEditable(int row, int column) {
-            return columnEditables[column];
-         }
-      });
-
-      table.getColumnModel().getColumn(0).setResizable(false);
-      table.getColumnModel().getColumn(0).setPreferredWidth(70);
-      table.getColumnModel().getColumn(1).setResizable(false);
-      table.getColumnModel().getColumn(1).setPreferredWidth(180);
-      table.getColumnModel().getColumn(2).setResizable(false);
-      table.getColumnModel().getColumn(2).setPreferredWidth(50);
-
-      table.addMouseListener(new MouseAdapter() {
-         @Override
-         public void mouseClicked(MouseEvent e) {
-            int rowNum = table.getSelectedRow();
-            CommunityVO vos = new CommunityVO();
-            vos = list.get(rowNum);
-
-            new Post_View(vos);
-         }
-      });
-
-      scrollPane.setViewportView(table);
-
-      search_cb.setModel(new DefaultComboBoxModel<String>(new String[] { "ì œëª©", "ë‚´ìš©", "ë°±ì‹ ì¢…ë¥˜" }));
-      search_cb.setBounds(10, 632, 70, 21);
-      add(search_cb);
-
-      searchString.setBounds(92, 632, 175, 21);
-      add(searchString);
-      searchString.setColumns(10);
-
-      search_btn.setBounds(275, 632, 80, 23);
-      add(search_btn);
-      search_btn.addActionListener(new Search_Action());
-
-      write_btn.setBounds(12, 16, 110, 23);
-      write_btn.addActionListener(new Write_Action());
-
-      add(write_btn);
-
-      refresh_btn.setBounds(128, 16, 110, 23);
-      refresh_btn.addActionListener(new Refresh_Action());
-      add(refresh_btn);
-
-      back_btn.setBounds(244, 16, 110, 23);
-      back_btn.addActionListener(new Back_Action());
-      add(back_btn);
-
-      setVisible(true);
-
-   }
-
-   private class Back_Action implements ActionListener {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         if (cn.userno == -1)
-            win.change("panel01");
-         else
-            win.change("panel06");
-      }
-   }
-
-   private class Refresh_Action implements ActionListener {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         table_refresh();
-      }
-   }
-
-   private class Search_Action implements ActionListener {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         if (searchString.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "ê²€ìƒ‰ì–´ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.");
-         } else {
-            if (String.valueOf(search_cb.getSelectedItem()) == "ì œëª©") {
-               search("ptitle", searchString.getText());
-            } else if (String.valueOf(search_cb.getSelectedItem()) == "ë‚´ìš©") {
-               search("pcontent", searchString.getText());
-            } else if (String.valueOf(search_cb.getSelectedItem()) == "ë°±ì‹ ì¢…ë¥˜") {
-               search("vname", searchString.getText());
-            }
-         }
-
-      }
-   }
-
-   private class Write_Action implements ActionListener {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         new Post_Add();
-      }
-   }
-
-   private void table_refresh() {
-      scrollPane.setBounds(8, 49, 350, 570);
-      add(scrollPane);
-
-      List<CommunityVO> list = select();
-      Object[][] rowDatas = new Object[list.size()][colNames.length];
-
-      for (int i = 0; i < list.size(); i++) {
-         rowDatas[i] = new Object[] { list.get(i).vname, list.get(i).title, get_userid(list.get(i).writer) };
-      }
-
-      table.setModel(new DefaultTableModel(rowDatas, colNames) {
-         boolean[] columnEditables = new boolean[] { false, false, false };
-
-         public boolean isCellEditable(int row, int column) {
-            return columnEditables[column];
-         }
-      });
-
-      table.getColumnModel().getColumn(0).setResizable(false);
-      table.getColumnModel().getColumn(0).setPreferredWidth(70);
-      table.getColumnModel().getColumn(1).setResizable(false);
-      table.getColumnModel().getColumn(1).setPreferredWidth(180);
-      table.getColumnModel().getColumn(2).setResizable(false);
-      table.getColumnModel().getColumn(2).setPreferredWidth(50);
-
-      table.addMouseListener(new MouseAdapter() {
-         @Override
-         public void mouseClicked(MouseEvent e) {
-            int rowNum = table.getSelectedRow();
-            CommunityVO vos = new CommunityVO();
-            vos = list.get(rowNum);
-
-            new Post_View(vos);
-         }
-      });
-
-      scrollPane.setViewportView(table);
-
-      setVisible(true);
-   }
-
-   private String get_userid(int userno) {
-      String userid = "";
-      final String sql = "select yvid from yv_user where yvuserno = ?";
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setInt(1, userno);
-         cn.rset = cn.pstmt.executeQuery();
-         if (cn.rset.next()) {
-            userid = cn.rset.getString("yvid");
-         }
-
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-      return userid;
-   }
-
-   private void insert(String vname, String title, String content) {
-      final String sql1 = "insert into post values (?, ?, ?, ?, ?)";
-      final String sql2 = "SELECT MAX(postno) from POST";
-      try {
-         cn.stmt = cn.conn.createStatement();
-         cn.rset = cn.stmt.executeQuery(sql2);
-         cn.rset.next();
-         int no_tmp = cn.rset.getInt("MAX(postno)") + 1;
-         cn.pstmt = cn.conn.prepareStatement(sql1);
-         cn.pstmt.setInt(1, no_tmp);
-         cn.pstmt.setString(2, vname);
-         cn.pstmt.setString(3, title);
-         cn.pstmt.setString(4, content);
-         cn.pstmt.setInt(5, cn.userno);
-
-         cn.pstmt.executeUpdate();
-
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-      return;
-   }
-
-   private void delete(CommunityVO vo) {
-      final String sql = "delete from post where postno=?";
-
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.pstmt.setInt(1, vo.num);
-
-         cn.pstmt.executeUpdate();
-
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-      return;
-   }
-
-   private List<CommunityVO> select() {
-      final String sql = "select * from post order by postno desc";
-      List<CommunityVO> sel_list = new ArrayList<CommunityVO>();
-
-      try {
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.rset = cn.pstmt.executeQuery();
-
-         while (cn.rset.next()) {
-            CommunityVO vo = new CommunityVO();
-            vo.num = cn.rset.getInt("postno");
-            vo.vname = cn.rset.getString("vname");
-            vo.title = cn.rset.getString("ptitle");
-            vo.content = cn.rset.getString("pcontent");
-            vo.writer = cn.rset.getInt("pwriter");
-
-            sel_list.add(vo);
-
-         }
-
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-
-      return sel_list;
-   }
-
-   private void search(String search, String searchString) {
-      List<CommunityVO> list = new ArrayList<CommunityVO>();
-
-      try {
-         String sql = "select postno, vname, ptitle, pcontent, pwriter from post where " + search + " like '%"
-               + searchString + "%' order by postno desc";
-         cn.pstmt = cn.conn.prepareStatement(sql);
-         cn.rset = cn.pstmt.executeQuery();
-
-         while (cn.rset.next()) {
-            CommunityVO vo = new CommunityVO();
-            vo.num = cn.rset.getInt("postno");
-            vo.vname = cn.rset.getString("vname");
-            vo.title = cn.rset.getString("ptitle");
-            vo.content = cn.rset.getString("pcontent");
-            vo.writer = cn.rset.getInt("pwriter");
-
-            list.add(vo);
-
-         }
-
-         if (list.size() == 0) {
-            JOptionPane.showMessageDialog(null, "í•´ë‹¹í•˜ëŠ” ê²Œì‹œê¸€ì´ ì—†ìŠµë‹ˆë‹¤.");
-         } else {
-            // new Community_Panel();
-         }
-
-      } catch (SQLException e) {
-         e.printStackTrace();
-      }
-
-   }
-
-   private class Post_View extends JFrame {
-
-      public Post_View(CommunityVO vo) {
-         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
-         Dimension win_size = getContentPane().getSize();
-
-         int x_pos = (int) (screen.getWidth() / 2 - win_size.getWidth() / 2);
-         int y_pos = (int) (screen.getHeight() / 2 - win_size.getHeight() / 2);
-
-         setBounds(new Rectangle(x_pos - 190, y_pos - 350, 380, 700));
-         setTitle("ê²Œì‹œê¸€");
-         getContentPane().setLayout(null);
-
-         JLabel vnameLabel = new JLabel("ë°±ì‹ ì¢…ë¥˜");
-         vnameLabel.setBounds(17, 25, 100, 20);
-         getContentPane().add(vnameLabel);
-
-         JLabel vnameLabel_2 = new JLabel(vo.vname);
-         vnameLabel_2.setBounds(85, 25, 100, 20);
-         getContentPane().add(vnameLabel_2);
-
-         JLabel titleLabel = new JLabel("ì œëª©");
-         titleLabel.setBounds(27, 60, 100, 20);
-         getContentPane().add(titleLabel);
-
-         JLabel titleLabel_2 = new JLabel(vo.title);
-         titleLabel_2.setBounds(85, 60, 200, 20);
-         getContentPane().add(titleLabel_2);
-
-         JLabel writerLabel = new JLabel("ì‘ì„±ì");
-         writerLabel.setBounds(22, 95, 100, 20);
-         getContentPane().add(writerLabel);
-
-         JLabel writerLabel_2 = new JLabel(get_userid(vo.writer));
-         writerLabel_2.setBounds(85, 95, 100, 20);
-         getContentPane().add(writerLabel_2);
-
-         JLabel contentLabel = new JLabel("ë‚´ìš©");
-         contentLabel.setBounds(27, 130, 100, 20);
-         getContentPane().add(contentLabel);
-
-         JTextArea textArea = new JTextArea(vo.content);
-         textArea.setLineWrap(true);
-         textArea.setRows(5);
-         textArea.setBounds(85, 130, 250, 460);
-         getContentPane().add(textArea);
-         textArea.setEditable(false);
-
-         JButton btnDel = new JButton("ê¸€ì‚­ì œ");
-         btnDel.setBounds(135, 620, 100, 23);
-         btnDel.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               if (cn.userno == vo.writer || cn.userno == 0) {
-                  delete(vo);
-                  JOptionPane.showMessageDialog(null, "ê²Œì‹œê¸€ ì‚­ì œê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.", "", 1);
-               } else {
-                  JOptionPane.showMessageDialog(null, "ì‘ì„±ì ë³¸ì¸ë§Œ ì‚­ì œí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", "", 0);
-               }
-            }
-         });
-         getContentPane().add(btnDel);
-
-         JButton btnClose = new JButton("ë‹«ê¸°");
-         btnClose.setBounds(250, 620, 100, 23);
-         btnClose.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-               setVisible(false);
-
-            }
-         });
-         getContentPane().add(btnClose);
-
-         setVisible(true);
-
-      }
-   }
-
-   private class Post_Add extends JFrame {
-      private static JTextField title_tf;
-      private static JTextArea content_ta = new JTextArea();
-      private static final JLabel vnameLabel = new JLabel("ë°±ì‹ ì¢…ë¥˜");
-      private static final JLabel titleLabel = new JLabel("ì œëª©");
-      private static final JLabel contentLabel = new JLabel("ë‚´ìš©");
-      private static final JButton btnWrite = new JButton("ì‘ì„±ì™„ë£Œ");
-
-      public Post_Add() {
-         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
-         Dimension win_size = getContentPane().getSize();
-
-         int x_pos = (int) (screen.getWidth() / 2 - win_size.getWidth() / 2);
-         int y_pos = (int) (screen.getHeight() / 2 - win_size.getHeight() / 2);
-
-         setBounds(new Rectangle(x_pos - 190, y_pos - 350, 380, 700));
-         setTitle("ê¸€ì“°ê¸°");
-         getContentPane().setLayout(null);
-
-         vnameLabel.setBounds(17, 25, 100, 20);
-         getContentPane().add(vnameLabel);
-
-         String[] aaaaa = { "í™”ì´ì", "ëª¨ë”ë‚˜", "ì•„ìŠ¤íŠ¸ë¼ì œë„¤ì¹´", "ì–€ì„¼" };
-         JComboBox<String> combobox = new JComboBox<String>(aaaaa);
-         combobox.setBounds(85, 25, 140, 21);
-         getContentPane().add(combobox);
-
-         titleLabel.setBounds(27, 60, 100, 20);
-         getContentPane().add(titleLabel);
-
-         title_tf = new JTextField();
-         title_tf.setBounds(85, 60, 250, 21);
-         getContentPane().add(title_tf);
-         title_tf.setColumns(10);
-
-         contentLabel.setBounds(27, 95, 100, 20);
-         getContentPane().add(contentLabel);
-
-         content_ta.setLineWrap(true);
-         content_ta.setRows(5);
-         content_ta.setBounds(85, 95, 250, 495);
-         getContentPane().add(content_ta);
-
-         btnWrite.setBounds(140, 620, 97, 23);
-         btnWrite.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               if (title_tf.getText().equals("")) {
-                  JOptionPane.showMessageDialog(null, "ì œëª©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 2);
-               } else if (content_ta.getText().equals("")) {
-                  JOptionPane.showMessageDialog(null, "ë‚´ìš©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.", "", 2);
-               } else {
-                  JOptionPane.showMessageDialog(null, "ê²Œì‹œê¸€ì´ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.", "", 1);
-                  insert(combobox.getSelectedItem().toString(), title_tf.getText(), content_ta.getText());
-                  setVisible(false);
-                  table_refresh();
-               }
-               clear_field();
-
-            }
-         });
-         getContentPane().add(btnWrite);
-
-         JButton btnClose = new JButton("ì·¨ì†Œ");
-         btnClose.setBounds(245, 620, 97, 23);
-         btnClose.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-               setVisible(false);
-
-            }
-         });
-         getContentPane().add(btnClose);
-
-         setVisible(true);
-
-      }
-
-      private static void clear_field() { // í…ìŠ¤íŠ¸ë°•ìŠ¤ ì´ˆê¸°í™”
-         title_tf.setText("");
-         content_ta.setText("");
-      }
-   }
-
-   void is_login() {
-      if (cn.userno == -1) {
-         write_btn.setEnabled(false);
-      } else {
-         write_btn.setEnabled(true);
-      }
-   }
+class JPanel14 extends JPanel { // 14¹øÂ° ÆĞ³Î
+
+	private Test win;
+	private static JTextField vaccine_tf = new JTextField();
+	private static final JLabel label1 = new JLabel("¹é½ÅÀÌ¸§");
+	private static final JButton add_btn = new JButton("Ãß°¡");
+	private static final JButton del_btn = new JButton("»èÁ¦");
+	private static final JButton back_btn = new JButton("µÚ·Î");
+
+	public JPanel14(Test win) {
+
+		setLayout(null);
+		this.win = win;
+
+		back_btn.setSize(70, 20);
+		back_btn.setLocation(10, 15);
+		add(back_btn);
+
+		label1.setBounds(60, 190, 150, 15);
+		add(label1);
+
+		vaccine_tf.setBounds(125, 187, 160, 21);
+		add(vaccine_tf);
+		vaccine_tf.setColumns(10);
+
+		add_btn.setSize(80, 23);
+		add_btn.setLocation(98, 272);
+		add(add_btn);
+
+		del_btn.setSize(80, 23);
+		del_btn.setLocation(188, 272);
+		add(del_btn);
+
+		back_btn.addActionListener(new MyActionListener3());
+
+		add_btn.addActionListener(new MyActionListener1());
+
+		del_btn.addActionListener(new MyActionListener2());
+
+	}
+
+	private class MyActionListener1 implements ActionListener { // Ãß°¡ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final String sql = "insert into VACCINETYPE values(?)";
+			try {
+				cn.pstmt = cn.conn.prepareStatement(sql);
+				cn.pstmt.setString(1, vaccine_tf.getText());
+				cn.pstmt.executeUpdate();
+			} catch (Exception ee) {
+				System.out.println(ee);
+			}
+		}
+	}
+
+	private class MyActionListener2 implements ActionListener { // »èÁ¦ ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final String sql = "delete from VACCINETYPE where vname = ?";
+			try {
+				cn.pstmt = cn.conn.prepareStatement(sql);
+				cn.pstmt.setString(1, vaccine_tf.getText());
+				cn.pstmt.executeUpdate();
+			} catch (Exception ee) {
+				System.out.println(ee);
+			}
+		}
+	}
+
+	private class MyActionListener3 implements ActionListener { // µÚ·Î ¹öÆ°
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			clear_field();
+			win.change("panel13");
+		}
+	}
+
+	private static void clear_field() { // ÅØ½ºÆ®¹Ú½º ÃÊ±âÈ­
+		vaccine_tf.setText("");
+	}
 
 }
 
 @SuppressWarnings("serial")
 class Test extends JFrame {
 
-   public Login_Panel yvPanel01 = null;
-   public SignUp_Panel yvPanel02 = null;
-   public Find_ID_Panel yvPanel03 = null;
-   public Find_PW_Panel yvPanel04 = null;
-   public Confirm_PW_Panel yvPanel05 = null;
-   public MainPanel yvPanel06 = null;
-   public User_Modify_Panel yvPanel07 = null;
-   public JPanel08 yvPanel08 = null;
-   public JPanel09 yvPanel09 = null;
-   public JPanel12 yvPanel12 = null;
-   public JPanel13 yvPanel13 = null;
-   public JPanel14 yvPanel14 = null;
-   public Community_Panel yvPanel15 = null;
+	public Login_Panel jpanel01 = null;
+	public SignUp_Panel jpanel02 = null;
+	public Find_ID_Panel jpanel03 = null;
+	public Find_PW_Panel jpanel04 = null;
+	public Confirm_PW_Panel jpanel05 = null;
+	public MainPanel JPanel06 = null;
+	public User_Modify_Panel JPanel07 = null;
+	public JPanel08 JPanel08 = null;
+	public JPanel09 JPanel09 = null;
+	public JPanel10 JPanel10 = null;
+	public JPanel12 JPanel12 = null;
+	public JPanel13 JPanel13 = null;
+	public JPanel14 JPanel14 = null;
 
-   public void change(String panelName) { // íŒ¨ë„ ë³€ê²½ í›„ ì¬ì„¤ì •
+	public void change(String panelName) { // ÆĞ³Î º¯°æ ÈÄ Àç¼³Á¤
 
-      if (panelName.equals("panel01")) {
-         cn.userno = -1;
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel01);
-         revalidate();
-         repaint();
-      }
+		if (panelName.equals("panel01")) {
+			getContentPane().removeAll();
+			getContentPane().add(jpanel01);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel03")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel03);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel03")) {
+			getContentPane().removeAll();
+			getContentPane().add(jpanel03);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel04")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel04);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel04")) {
+			getContentPane().removeAll();
+			getContentPane().add(jpanel04);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel05")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel05);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel05")) {
+			getContentPane().removeAll();
+			getContentPane().add(jpanel05);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel06")) {
-         yvPanel06.menu_manage();
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel06);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel06")) {
+			JPanel06.menu_manage();
+			getContentPane().removeAll();
+			getContentPane().add(JPanel06);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel07")) {
-         yvPanel07.is_lost();
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel07);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel07")) {
+			JPanel07.is_lost();
+			getContentPane().removeAll();
+			getContentPane().add(JPanel07);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel08")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel08);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel08")) {
+			getContentPane().removeAll();
+			getContentPane().add(JPanel08);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel09")) {
-         yvPanel09.is_inquiry();
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel09);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel09")) {
+			JPanel09.is_inquiry();
+			getContentPane().removeAll();
+			getContentPane().add(JPanel09);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel10")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel09);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel10")) {
+			getContentPane().removeAll();
+			getContentPane().add(JPanel09);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel12")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel12);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel12")) {
+			getContentPane().removeAll();
+			getContentPane().add(JPanel12);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel13")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel13);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel13")) {
+			getContentPane().removeAll();
+			getContentPane().add(JPanel13);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel14")) {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel14);
-         revalidate();
-         repaint();
-      }
+		else if (panelName.equals("panel14")) {
+			getContentPane().removeAll();
+			getContentPane().add(JPanel14);
+			revalidate();
+			repaint();
+		}
 
-      else if (panelName.equals("panel15")) {
-         yvPanel15.is_login();
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel15);
-         revalidate();
-         repaint();
-      }
+		else {
+			getContentPane().removeAll();
+			getContentPane().add(jpanel02);
+			revalidate();
+			repaint();
+		}
+	}
 
-      else {
-         getContentPane().removeAll();
-         getContentPane().add(yvPanel02);
-         revalidate();
-         repaint();
-      }
-   }
+	public static void main(String[] args) {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			cn.conn = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xepdb1", "scott", "tiger");
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		Test win = new Test();
 
-   public static void main(String[] args) {
-      try {
-         Class.forName("oracle.jdbc.driver.OracleDriver");
-         cn.conn = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/xepdb1", "scott", "tiger");
-      } catch (Exception e) {
-         System.out.println(e);
-      }
-      Test win = new Test();
+		win.setTitle("YUVID");
+		win.jpanel01 = new Login_Panel(win);
+		win.jpanel02 = new SignUp_Panel(win);
+		win.jpanel03 = new Find_ID_Panel(win);
+		win.jpanel04 = new Find_PW_Panel(win);
+		win.jpanel05 = new Confirm_PW_Panel(win);
+		win.JPanel06 = new MainPanel(win);
+		win.JPanel07 = new User_Modify_Panel(win);
+		win.JPanel08 = new JPanel08(win);
+		win.JPanel09 = new JPanel09(win);
+		win.JPanel10 = new JPanel10(win);
+		win.JPanel12 = new JPanel12(win);
+		win.JPanel13 = new JPanel13(win);
+		win.JPanel14 = new JPanel14(win);
 
-      win.setTitle("YUVID");
-      win.yvPanel01 = new Login_Panel(win);
-      win.yvPanel02 = new SignUp_Panel(win);
-      win.yvPanel03 = new Find_ID_Panel(win);
-      win.yvPanel04 = new Find_PW_Panel(win);
-      win.yvPanel05 = new Confirm_PW_Panel(win);
-      win.yvPanel06 = new MainPanel(win);
-      win.yvPanel07 = new User_Modify_Panel(win);
-      win.yvPanel08 = new JPanel08(win);
-      win.yvPanel09 = new JPanel09(win);
-      win.yvPanel12 = new JPanel12(win);
-      win.yvPanel13 = new JPanel13(win);
-      win.yvPanel14 = new JPanel14(win);
-      win.yvPanel15 = new Community_Panel(win);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
-      Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension win_size = win.getSize();
 
-      Dimension win_size = win.getSize();
+		int x_pos = (int) (screen.getWidth() / 2 - win_size.getWidth() / 2);
+		int y_pos = (int) (screen.getHeight() / 2 - win_size.getHeight() / 2);
+		win.setLocation(x_pos - 190, y_pos - 350);
 
-      int x_pos = (int) (screen.getWidth() / 2 - win_size.getWidth() / 2);
-      int y_pos = (int) (screen.getHeight() / 2 - win_size.getHeight() / 2);
-      win.setLocation(x_pos - 190, y_pos - 350);
-
-      win.add(win.yvPanel01);
-      win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      win.setSize(380, 700);
-      win.setResizable(false);
-      win.setVisible(true);
-   }
+		win.add(win.jpanel01);
+		win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		win.setSize(380, 700);
+		win.setResizable(false);
+		win.setVisible(true);
+	}
 }
