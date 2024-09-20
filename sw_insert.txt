@@ -1,0 +1,45 @@
+insert into YV_USER
+	values(0, 'superyvmanage', '1qw23er4!@', '관리자', '00000000000', 1);
+insert into YV_USER
+	values(1, 'betatester', '123123', '테스터', '00000000000', 0);
+insert into YV_USER
+	values(2, 'gildong123', 'fathernofather', '홍길동', '00000000000', 0);
+insert into YV_USER
+	values(3, 'seowan16', 'password', '서완', '00000000000', 0);
+
+insert into HOSPITAL
+	values(1, '0531235678', 'yu병원', '대구');
+insert into HOSPITAL
+	values(2, '0531230000', '대구어떤병원', '대구');
+insert into HOSPITAL
+	values(3, '0535355353', '대구의어떤내과', '대구');
+insert into HOSPITAL
+	values(4, '0212347890', '김병원', '서울');
+insert into HOSPITAL
+	values(5, '0212341234', '값비싼병원', '서울');
+insert into HOSPITAL
+	values(6, '0256789090', '환자없는병원', '서울');
+
+insert into VACCINETYPE
+	values('아스트라제네카');
+insert into VACCINETYPE
+	values('화이자');
+insert into VACCINETYPE
+	values('모더나');
+insert into VACCINETYPE
+	values('얀센');
+
+insert into VACCINE
+	values('화이자', 1, to_date('2021-12-30 14:00:00', 'yyyy-mm-dd hh24:mi:ss'), 5);
+insert into VACCINE
+	values('아스트라제네카', 1, to_date('2021-12-30 14:00:00', 'yyyy-mm-dd hh24:mi:ss'), 1);
+
+insert into APPOINT
+	values(3, '모더나', 1, to_date('2021-12-30 14:00:00', 'yyyy-mm-dd hh24:mi:ss'));
+insert into APPOINT
+	values(1, '화이자', 1, to_date('2021-12-30 14:00:00', 'yyyy-mm-dd hh24:mi:ss'));
+
+insert into POST
+	values(1, '모더나', '하나도 안아픔', '거짓말이에요', 2);
+insert into POST
+	values(2, '모더나', '2차맞았는데 하나도 안아픔', '거짓말이에요', 2);
